@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splicerr Clone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. ВЕРХНЯЯ ПАНЕЛЬ (Во всю ширину экрана) -->
+    <div class="top-header">
+        
+        <!-- Левая зона (Лого или пустота) -->
+        <div class="header-logo-area"></div> 
+
+        <div class="header-content">
+            <!-- Поиск по центру -->
+            <div class="header-search">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Search Splice">
+                </div>
+            </div>
+
+            <!-- Профиль справа -->
+            <div class="header-right">
+                <div class="credits-pill">
+                    <span class="credits-count">155</span>
+                    <span class="credits-label">credits</span>
+                </div>
+                <button class="icon-btn">?</button>
+                <div class="user-avatar">N</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. СРЕДНЯЯ ЧАСТЬ (Слева меню, Справа контент) -->
+    <!-- Этот контейнер занимает место МЕЖДУ шапкой и подвалом -->
+    <div class="middle-container">
+        
+        <!-- БОКОВАЯ ПАНЕЛЬ (Внутри средней части) -->
+        <div class="sidebar">
+            <div class="nav-section main-nav">
+                <div class="nav-item active" onclick="selectItem(this)">
+                    <span>Browse</span>
+                </div>
+                <div class="nav-item" onclick="selectItem(this)">
+                    <span>Create</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-title">Library</div>
+                <div class="nav-item" onclick="selectItem(this)"><span>Sounds</span></div>
+                <div class="nav-item" onclick="selectItem(this)">
+                    <span>Apps & Plugins</span>
+                    <span class="badge-new">New</span>
+                </div>
+                <div class="nav-item" onclick="selectItem(this)"><span>Stacks</span></div>
+            </div>
+
+            <div class="nav-section">
+                <div class="section-header">
+                    <div class="section-title">Collections</div>
+                    <div class="add-icon">+</div>
+                </div>
+                <div class="nav-item" onclick="selectItem(this)">
+                    <img src="Interface/Icons/LeftSide_ui/AllCollections.png" class="nav-icon" alt="All">
+                    <span>All Collections</span>
+                </div>
+                <div class="nav-item" onclick="selectItem(this)">
+                    <img src="Interface/Icons/LeftSide_ui/Likes.png" class="nav-icon" alt="Likes">
+                    <span>Likes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОСНОВНОЙ КОНТЕНТ (Справа от меню) -->
+        <div class="main-content">
+            <!-- Место под контент -->
+        </div>
+
+    </div>
+
+    <!-- 3. НИЖНЯЯ ПАНЕЛЬ (Во всю ширину экрана) -->
+    <div class="bottom-player">
+        <div class="progress-line"><div class="progress-fill" style="width: 0%;"></div></div>
+
+        <div class="player-controls">
+            <img src="Interface/icons/Player/prev.png" alt="" class="ctrl-btn small">
+            <img src="Interface/icons/Player/play.png" alt="" class="ctrl-btn main">
+            <img src="Interface/icons/Player/next.png" alt="" class="ctrl-btn small">
+        </div>
+
+        <div class="player-info">
+            <div class="track-cover-placeholder" style="opacity: 0;"></div>
+            <div class="track-text">
+                <div class="track-title" id="track-name">Select a sound</div>
+                <div class="track-tags" id="track-meta">...</div>
+            </div>
+        </div>
+
+        <div class="player-volume">
+            <img src="Interface/icons/Player/volume.png" alt="" class="vol-icon">
+            <div class="volume-track-container" id="vol-container">
+                <div class="vol-bg-line"></div>
+                <div class="vol-fill-line" id="vol-fill" style="width: 80%;"></div>
+                <div class="vol-knob" id="vol-knob" style="left: 80%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
