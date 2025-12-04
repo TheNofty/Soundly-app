@@ -1,16 +1,19 @@
 :root {
-    --bg-deep: #000000;        
-    --panel-color: #232426;    /* Цвет Верхней и Нижней */
-    --sidebar-bg: #121212;     /* Цвет Боковой */
+    /* === ЦВЕТА === */
+    --bg-deep: #121214;        
+    --panel-color: #232426;    
+    --sidebar-bg: #121214;     
+    
+    /* === ЦВЕТ ЛИНИЙ === */
+    --border-lines: #3A3B3D;   
     
     --search-bg: #303236;      
-    --border-lines: #252525;
     
     --text-white: #FFFFFF;
     --text-grey: #a0a0a0;
     
     --accent-blue: #0055FF;
-    --hover-bg: rgba(48, 50, 54, 0.5);
+    --hover-bg: rgba(255, 255, 255, 0.05);
     --active-btn: #303236;     
     
     --header-h: 60px;
@@ -27,27 +30,25 @@ body {
     color: var(--text-white);
     height: 100vh; overflow: hidden;
     
-    /* ФЛЕКС-КОЛОНКА НА ВЕСЬ ЭКРАН */
     display: flex;
     flex-direction: column;
 }
 
-/* === 1. ВЕРХНЯЯ ПАНЕЛЬ (ФИКСИРОВАННАЯ ВЫСОТА, ВСЯ ШИРИНА) === */
+/* === 1. ВЕРХНЯЯ ПАНЕЛЬ === */
 .top-header {
     height: var(--header-h);
     width: 100%;
     background-color: var(--panel-color); 
     display: flex;
-    z-index: 200; /* Самый верхний слой */
-    flex-shrink: 0; /* Не сжиматься */
+    z-index: 200; 
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-lines); 
 }
 
 .header-logo-area { 
     width: var(--sidebar-w); 
     height: 100%; 
-    /* Можем сделать фон как у сайдбара, чтобы визуально продлить, или оставить пустым */
-    /* background-color: var(--sidebar-bg); */ 
-    border-right: 1px solid var(--border-lines); 
+    background-color: var(--panel-color); 
     flex-shrink: 0; 
 } 
 
@@ -56,6 +57,7 @@ body {
     padding: 0 32px;
 }
 
+/* Поиск */
 .header-search { flex-grow: 1; display: flex; justify-content: center; }
 .search-input-wrapper { position: relative; width: 100%; max-width: 480px; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #ccc; width: 16px; }
@@ -70,6 +72,7 @@ body {
 .search-input-wrapper input:focus { background-color: #3a3c40; }
 .search-input-wrapper input::placeholder { color: #999; }
 
+/* Профиль справа */
 .header-right { display: flex; align-items: center; gap: 16px; width: 250px; justify-content: flex-end; }
 .credits-pill { display: flex; gap: 6px; font-size: 13px; font-weight: 700; color: #fff; }
 .credits-label { color: var(--text-grey); font-weight: 400;} 
@@ -79,34 +82,33 @@ body {
     display: flex; align-items: center; justify-content: center; font-size: 12px;
 }
 .icon-btn:hover { border-color: #fff; color: #fff; }
+
+/* === АВАТАРКА ОБНОВЛЕННАЯ === */
 .user-avatar { 
-    width: 30px; height: 30px; border-radius: 50%; 
-    background: linear-gradient(135deg, #6221ea, #4200d4); 
-    display: flex; align-items: center; justify-content: center; 
-    font-size: 13px; font-weight: 600; color: white;
+    width: 32px; height: 32px; border-radius: 50%; 
+    object-fit: cover; /* Важно: чтобы картинка не сплющивалась */
+    background-color: #333; /* Фон, если картинка прозрачная или грузится */
+    border: 1px solid #444;
 }
 
-
-/* === 2. СРЕДНЯЯ ЧАСТЬ (РАСТЯГИВАЕТСЯ МЕЖДУ ВЕРХОМ И НИЗОМ) === */
+/* === 2. СРЕДНЯЯ ЧАСТЬ === */
 .middle-container {
-    flex-grow: 1; /* Занимает все свободное место */
+    flex-grow: 1; 
     display: flex;
-    overflow: hidden; /* Чтобы скроллились внутренности, а не страница */
+    overflow: hidden; 
     width: 100%;
 }
 
-/* БОКОВАЯ ПАНЕЛЬ (Внутри middle) */
+/* БОКОВАЯ ПАНЕЛЬ */
 .sidebar {
     width: var(--sidebar-w);
-    background-color: var(--sidebar-bg);
+    background-color: var(--sidebar-bg); 
     border-right: 1px solid var(--border-lines);
     display: flex; flex-direction: column;
-    
-    /* Теперь паддинг нормальный, потому что шапка больше не перекрывает меню */
     padding: 24px 10px; 
-    
     overflow-y: auto;
     flex-shrink: 0;
+    box-sizing: border-box; 
 }
 
 .nav-section { margin-bottom: 24px; }
@@ -126,17 +128,15 @@ body {
 .nav-icon { width: 14px; height: 14px; margin-right: 10px; opacity: 0.6; }
 .nav-item.active .nav-icon { opacity: 1; }
 
-
-/* КОНТЕНТ (Внутри middle) */
+/* КОНТЕНТ */
 .main-content {
     flex-grow: 1;
-    background-color: var(--bg-deep);
+    background-color: var(--bg-deep); 
     overflow-y: auto;
-    padding: 20px; /* Отступы для контента внутри */
+    padding: 20px; 
 }
 
-
-/* === 3. НИЖНЯЯ ПАНЕЛЬ (ФИКСИРОВАННАЯ ВЫСОТА, ВСЯ ШИРИНА) === */
+/* === 3. НИЖНЯЯ ПАНЕЛЬ === */
 .bottom-player {
     height: var(--player-h);
     width: 100%;
@@ -147,7 +147,7 @@ body {
     
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 32px; box-sizing: border-box;
-    position: relative; /* Для прогресс бара */
+    position: relative; 
 }
 
 .progress-line { position: absolute; top: -1px; left: 0; width: 100%; height: 2px; background: transparent; cursor: pointer; }

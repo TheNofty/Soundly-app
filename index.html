@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Splicerr Clone</title>
+    <title>Soundly App</title>
     <link rel="stylesheet" href="style.css">
+    <!-- ВАЖНО: Подключаем "мозги" Телеграма -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-    <!-- 1. ВЕРХНЯЯ ПАНЕЛЬ (Во всю ширину экрана) -->
+    <!-- 1. ВЕРХНЯЯ ПАНЕЛЬ -->
     <div class="top-header">
         
-        <!-- Левая зона (Лого или пустота) -->
         <div class="header-logo-area"></div> 
 
         <div class="header-content">
-            <!-- Поиск по центру -->
+            <!-- Поиск -->
             <div class="header-search">
                 <div class="search-input-wrapper">
                     <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -29,20 +30,23 @@
             <!-- Профиль справа -->
             <div class="header-right">
                 <div class="credits-pill">
-                    <span class="credits-count">155</span>
+                    <!-- Сюда скрипт вставит число кредитов -->
+                    <span class="credits-count" id="user-credits">0</span>
                     <span class="credits-label">credits</span>
                 </div>
                 <button class="icon-btn">?</button>
-                <div class="user-avatar">N</div>
+                
+                <!-- АВАТАРКА: Теперь это картинка, а не текст -->
+                <!-- Если фото нет, покажем дефолтную картинку или заглушку -->
+                <img id="user-avatar" class="user-avatar" src="Interface/Icons/default_avatar.png" alt="User">
             </div>
         </div>
     </div>
 
-    <!-- 2. СРЕДНЯЯ ЧАСТЬ (Слева меню, Справа контент) -->
-    <!-- Этот контейнер занимает место МЕЖДУ шапкой и подвалом -->
+    <!-- 2. СРЕДНЯЯ ЧАСТЬ -->
     <div class="middle-container">
         
-        <!-- БОКОВАЯ ПАНЕЛЬ (Внутри средней части) -->
+        <!-- БОКОВАЯ ПАНЕЛЬ -->
         <div class="sidebar">
             <div class="nav-section main-nav">
                 <div class="nav-item active" onclick="selectItem(this)">
@@ -69,31 +73,33 @@
                     <div class="add-icon">+</div>
                 </div>
                 <div class="nav-item" onclick="selectItem(this)">
-                    <img src="Interface/Icons/LeftSide_ui/AllCollections.png" class="nav-icon" alt="All">
+                    <!-- Убедись, что картинки лежат по этому пути, если их нет - будут пустые квадраты -->
+                    <img src="Interface/Icons/LeftSide_ui/AllCollections.png" class="nav-icon" onerror="this.style.display='none'">
                     <span>All Collections</span>
                 </div>
                 <div class="nav-item" onclick="selectItem(this)">
-                    <img src="Interface/Icons/LeftSide_ui/Likes.png" class="nav-icon" alt="Likes">
+                    <img src="Interface/Icons/LeftSide_ui/Likes.png" class="nav-icon" onerror="this.style.display='none'">
                     <span>Likes</span>
                 </div>
             </div>
         </div>
 
-        <!-- ОСНОВНОЙ КОНТЕНТ (Справа от меню) -->
+        <!-- ОСНОВНОЙ КОНТЕНТ -->
         <div class="main-content">
-            <!-- Место под контент -->
+            <h2 style="color: #666; margin-top: 100px; text-align: center;">Welcome to Soundly</h2>
         </div>
 
     </div>
 
-    <!-- 3. НИЖНЯЯ ПАНЕЛЬ (Во всю ширину экрана) -->
+    <!-- 3. НИЖНЯЯ ПАНЕЛЬ -->
     <div class="bottom-player">
         <div class="progress-line"><div class="progress-fill" style="width: 0%;"></div></div>
 
         <div class="player-controls">
-            <img src="Interface/icons/Player/prev.png" alt="" class="ctrl-btn small">
-            <img src="Interface/icons/Player/play.png" alt="" class="ctrl-btn main">
-            <img src="Interface/icons/Player/next.png" alt="" class="ctrl-btn small">
+            <!-- Заменил src на заглушки, чтобы не ломалось если файлов нет -->
+            <div class="ctrl-btn small" style="background: #888; width: 12px; height: 12px; mask: url(Interface/icons/Player/prev.png); -webkit-mask: url(Interface/icons/Player/prev.png);"></div>
+            <div class="ctrl-btn main" style="background: #fff; width: 14px; height: 14px; mask: url(Interface/icons/Player/play.png); -webkit-mask: url(Interface/icons/Player/play.png);"></div>
+            <div class="ctrl-btn small" style="background: #888; width: 12px; height: 12px; mask: url(Interface/icons/Player/next.png); -webkit-mask: url(Interface/icons/Player/next.png);"></div>
         </div>
 
         <div class="player-info">
@@ -105,7 +111,7 @@
         </div>
 
         <div class="player-volume">
-            <img src="Interface/icons/Player/volume.png" alt="" class="vol-icon">
+            <div class="vol-icon" style="background: #888; width: 14px; height: 14px; mask: url(Interface/icons/Player/volume.png); -webkit-mask: url(Interface/icons/Player/volume.png);"></div>
             <div class="volume-track-container" id="vol-container">
                 <div class="vol-bg-line"></div>
                 <div class="vol-fill-line" id="vol-fill" style="width: 80%;"></div>
