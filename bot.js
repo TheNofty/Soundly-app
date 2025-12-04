@@ -18,7 +18,7 @@ bot.onText(/\/start/, (msg) => {
           // Здесь мы создаем кнопку Web App
           // ПОКА вставим просто сайт Telegram, чтобы проверить кнопку
           // Позже заменим это на ваше приложение
-          { text: "Открыть окно", web_app: { url: 'https://thenofty.github.io/my-tg-bot/' } }
+          { text: "Открыть окно", web_app: { url: 'https://thenofty.github.io/Soundly-app/' } }
         ]
       ]
     }
