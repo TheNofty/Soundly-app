@@ -2,12 +2,11 @@
 const tg = window.Telegram.WebApp;
 tg.expand(); 
 
-// === 2. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ===
+// === 2. ДАННЫЕ ===
 const user = tg.initDataUnsafe.user;
 
 const headerAvatar = document.getElementById('user-avatar');
 const creditsCount = document.getElementById('user-credits');
-// Элементы профиля
 const profileBigAvatar = document.getElementById('profile-big-avatar');
 const profileUsernameText = document.getElementById('profile-username');
 
@@ -19,7 +18,6 @@ if (user) {
         profileBigAvatar.src = user.photo_url;
     }
     
-    // Получаем никнейм или имя
     if (user.username) {
         profileUsernameText.innerText = '@' + user.username;
     } else {
@@ -28,8 +26,9 @@ if (user) {
 
     loadUserCredits(user.id);
 } else {
-    console.log("Запущено не в Telegram.");
-    profileUsernameText.innerText = "@BrowserUser";
+    // В браузере
+    console.log("Browser mode");
+    profileUsernameText.innerText = "@User";
     loadUserCredits("test_user_id");
 }
 
@@ -46,7 +45,6 @@ function loadUserCredits(userId) {
 // === 3. НАВИГАЦИЯ ===
 
 function openPage(btnElement, pageId) {
-    // 1. АКТИВАЦИЯ КНОПКИ В МЕНЮ
     if (btnElement) {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         btnElement.classList.add('active');
@@ -54,21 +52,17 @@ function openPage(btnElement, pageId) {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     }
 
-    // 2. СКРЫВАЕМ ВСЕ СТРАНИЦЫ
     const allPages = document.querySelectorAll('.content-frame');
     allPages.forEach(page => {
         page.style.display = 'none';
     });
 
-    // 3. ПОКАЗЫВАЕМ ЦЕЛЕВУЮ
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.style.display = 'block';
     }
 
-    // 4. СКРЫВАЕМ/ПОКАЗЫВАЕМ ПЛЕЕР
     const player = document.querySelector('.bottom-player');
-    
     if (pageId === 'page-home' || pageId === 'page-profile') {
         player.style.display = 'none';
     } else {
@@ -76,7 +70,6 @@ function openPage(btnElement, pageId) {
     }
 }
 
-// Громкость
 const volContainer = document.getElementById('vol-container');
 const volKnob = document.getElementById('vol-knob');
 const volFill = document.getElementById('vol-fill');
