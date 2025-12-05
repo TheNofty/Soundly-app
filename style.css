@@ -8,7 +8,7 @@
 
 :root {
     /* ============================================================== */
-    /* ===================== ⚙️ НАСТРОЙКИ (PC) ⚙️ =================== */
+    /* ===================== ⚙️ НАСТРОЙКИ ⚙️ ====================== */
     /* ============================================================== */
 
     /* --- [ 1. ГРУППА: ЛОГОТИП + НАЗВАНИЕ ] --- */
@@ -24,9 +24,10 @@
     --click-expand-y:    0px;    
 
 
-    /* --- [ 2. РЕКЛАМНЫЕ БАННЕРЫ (РАМКИ) ] --- */
+    /* --- [ 2. РЕКЛАМНЫЕ БАННЕРЫ (РАМКИ - ДЛЯ КОМПЬЮТЕРА) ] --- */
+    /* На телефоне эти размеры будут игнорироваться, чтобы всё влезло */
     
-    --ads-width:         400px;  /* Ширина на компе */
+    --ads-width:         590px;  
     --ads-height:        300px;  
     
     --ads-radius:        10px;   
@@ -45,9 +46,10 @@
     --btn-height:        30px;   
     --btn-bottom:        20px;   
     
-    --btn-font-size:     15px;   /* Исправил на 15 */
-    --btn-radius:        5px;    /* Исправил на 5 */
+    --btn-font-size:     5px;    /* Твоя настройка */
+    --btn-radius:        5px;    /* Твоя настройка */
     
+    /* ЦВЕТА КНОПОК */
     --btn-bg-telegram:   #279FDA; 
     --btn-bg-discord:    #0055FF;
     --btn-text-color:    #FFFFFF; 
@@ -57,7 +59,7 @@
     
     --header-h:          60px;   
     --player-h:          70px;   
-    --sidebar-w:         240px;  /* Ширина сайдбара */
+    --sidebar-w:         240px;  
 
 
     /* --- [ 5. ЦВЕТОВАЯ ПАЛИТРА ] --- */
@@ -96,8 +98,8 @@ body {
     display: flex; flex-direction: column;
 }
 
-/* ОБЩИЙ СБРОС ДЛЯ КАРТИНОК (Чтобы не ломались в ТГ) */
-img { display: block; border: none; max-width: 100%; }
+/* Общий сброс для изображений */
+img { display: block; max-width: 100%; }
 
 /* === ВЕРХНЯЯ ПАНЕЛЬ === */
 .top-header { height: var(--header-h); width: 100%; background-color: var(--panel-color); display: flex; z-index: 200; flex-shrink: 0; border-bottom: 1px solid var(--border-lines); }
@@ -143,7 +145,7 @@ img { display: block; border: none; max-width: 100%; }
 .icon-btn:hover { border-color: #fff; color: #fff; }
 .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background-color: #333; border: 1px solid #444; cursor: pointer; }
 
-/* === ОСНОВНОЕ ТЕЛО === */
+/* === ОСНОВНОЕ ТЕЛО (SIDEBAR + MAIN) === */
 .middle-container { flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
 .sidebar { width: var(--sidebar-w); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-lines); display: flex; flex-direction: column; padding: 24px 10px; overflow-y: auto; flex-shrink: 0; box-sizing: border-box; transition: transform 0.3s ease; }
 .nav-section { margin-bottom: 24px; }
@@ -162,25 +164,22 @@ img { display: block; border: none; max-width: 100%; }
     overflow-y: auto; padding: 0; 
 }
 
-/* === БАННЕРЫ === */
+/* === БАННЕРЫ (СПИСОК) === */
 .banners-container {
     display: flex; flex-direction: row; align-items: flex-start;
     padding-top: var(--ads-top-margin); 
     padding-left: var(--ads-left-margin); 
     gap: var(--ads-gap);
-    /* Разрешаем перенос на новую строку, если не влезают (для планшетов) */
+    
+    /* Чтобы если что-то не влезало, оно переносилось (важно для планшетов) */
     flex-wrap: wrap; 
 }
 
 .ad-card {
     display: block; position: relative;
-    /* Размеры берем из переменных */
     width: var(--ads-width); height: var(--ads-height);
     border-radius: var(--ads-radius);
     overflow: hidden; background-color: #232426; 
-    
-    /* Чтобы баннеры не сжимались, если места мало (уйдут вниз или появится скролл) */
-    flex-shrink: 0; 
 }
 
 .ad-image {
@@ -249,50 +248,38 @@ img { display: block; border: none; max-width: 100%; }
 /* ============================================================== */
 
 @media (max-width: 768px) {
-    /* 1. ГЛАВНОЕ: Меняем поведение шапки и меню */
+    /* 1. Прячем боковое меню */
+    .sidebar { display: none !important; }
     
-    .sidebar { 
-        display: none !important; /* Убираем меню */
-    }
-    
-    /* Меняем шапку, чтобы лого было видно нормально */
-    .top-header {
-        justify-content: space-between;
-    }
-    
-    /* Логотип на мобилке */
+    /* 2. Логотип снова показываем (ширина автоматически, сколько надо) */
     .header-logo-area {
-        width: auto; /* Уже не 240px, а сколько займет */
-        display: flex !important; /* Принудительно показываем */
+        width: auto; 
+        display: flex !important; 
         border: none;
-        padding-left: 15px; /* Чуть поменьше отступ */
+        padding-left: 15px; /* Чуть поменьше на мобиле, чтоб влезло */
+        pointer-events: auto; /* Чтобы на мобиле тоже можно было кликать */
     }
     
-    /* Скрываем поиск на мобилке (или уменьшаем) */
-    /* Пока скроем, чтобы не мешался */
+    /* Скрываем поиск */
     .header-search { display: none; } 
     
-    /* 2. БАННЕРЫ НА ТЕЛЕФОНЕ */
+    /* Ужимаем правый блок */
+    .credits-label { display: none; } 
+    .header-right { gap: 10px; width: auto; padding-right: 15px;}
+
+    /* 3. БАННЕРЫ НА ТЕЛЕФОНЕ (ВОССТАНОВИЛ ЛОГИКУ) */
+    /* Теперь они игнорируют ширину из конфига (590px) и строятся под экран */
     .banners-container {
-        /* ВЫСТРАИВАЕМ В КОЛОНКУ */
-        flex-direction: column;
-        
-        /* СБРАСЫВАЕМ ВЕРХНИЙ И ЛЕВЫЙ ОТСТУП */
-        padding: 20px 16px; 
+        flex-direction: column; /* В столбик */
+        padding: 20px 16px;     /* Сбрасываем 50px на 20px/16px */
+        gap: 20px;
         width: 100%;
         box-sizing: border-box;
     }
     
     .ad-card {
-        /* БАННЕР ЗАНИМАЕТ 100% ШИРИНЫ ЭКРАНА */
-        width: 100% !important; 
-        
-        /* Высоту делаем поменьше, чтобы два влезли */
-        height: 220px; 
-    }
-    
-    /* 3. ПРОФИЛЬ НА ТЕЛЕФОНЕ */
-    .profile-page-content {
-        padding-top: 30px;
+        width: 100% !important; /* На всю ширину телефона */
+        /* Высоту берем из конфига или делаем чуть меньше, если надо (тут пока из конфига 300) */
+        height: 220px; /* Фиксим высоту, чтобы на экране телефона два баннера влезли красиво */
     }
 }
