@@ -1,133 +1,47 @@
-/* === ПОДКЛЮЧЕНИЕ ШРИФТА === */
-@font-face {
-    font-family: 'Onder';
-    src: url('Interface/Fonts/ONDER-REGULAR.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+@font-face { font-family: 'Onder'; src: url('Interface/Fonts/ONDER-REGULAR.ttf') format('truetype'); font-weight: normal; font-style: normal; }
 
 :root {
-    /* ============================================================== */
-    /* ===================== ⚙️ НАСТРОЙКИ ⚙️ ====================== */
-    /* ============================================================== */
+    /* [1. ГРУППА: ЛОГОТИП] */
+    --logo-height: 40px; --logo-text-size: 10px; --logo-text-gap: 0px;    
+    --logo-left-pad: 20px; --logo-group-shift: 0px;    
+    --click-expand-x: 0px; --click-expand-y: 0px;    
 
-    /* --- [ 1. ГРУППА: ЛОГОТИП + НАЗВАНИЕ ] --- */
-    
-    --logo-height:       40px;   
-    --logo-text-size:    10px;   
-    --logo-text-gap:     0px;    
-    
-    --logo-left-pad:     20px;   
-    --logo-group-shift:  0px;    
+    /* [2. БАННЕРЫ] */
+    --ads-width: 500px; --ads-height: 300px; --ads-radius: 10px;   
+    --ads-left-margin: 50px; --ads-top-margin: 50px; --ads-gap: 20px;   
+    --zoom-telegram: 1.0; --zoom-discord: 1.0;    
 
-    --click-expand-x:    0px;    
-    --click-expand-y:    0px;    
+    /* [3. КНОПКИ БАННЕРОВ - ТВОИ НАСТРОЙКИ] */
+    --btn-width: 150px; --btn-height: 30px; --btn-bottom: 20px;   
+    --btn-font-size: 5px; /* <--- 5 PIXELS, КАК ТЫ ХОТЕЛ */ 
+    --btn-radius: 5px;    
+    --btn-bg-telegram: #279FDA; --btn-bg-discord: #0055FF; --btn-text-color: #FFFFFF; 
 
+    /* [4. ПАНЕЛИ] */
+    --header-h: 60px; --player-h: 70px; --sidebar-w: 240px;  
 
-    /* --- [ 2. РЕКЛАМНЫЕ БАННЕРЫ (РАМКИ) ] --- */
-    
-    --ads-width:         590px;  
-    --ads-height:        300px;  
-    
-    --ads-radius:        10px;   
-    
-    --ads-left-margin:   50px;   
-    --ads-top-margin:    50px;   
-    --ads-gap:           20px;   
-
-    --zoom-telegram:     1.0;    
-    --zoom-discord:      1.0;    
-
-
-    /* --- [ 3. КНОПКИ НА БАННЕРАХ ] --- */
-    
-    --btn-width:         150px;  
-    --btn-height:        30px;   
-    --btn-bottom:        20px;   
-    
-    /* ТВОИ НАСТРОЙКИ */
-    --btn-font-size:     5px;    
-    --btn-radius:        5px;    
-    
-    /* ЦВЕТА КНОПОК */
-    --btn-bg-telegram:   #279FDA; 
-    --btn-bg-discord:    #0055FF;
-    --btn-text-color:    #FFFFFF; 
-
-
-    /* --- [ 4. РАЗМЕРЫ ПАНЕЛЕЙ ] --- */
-    
-    --header-h:          60px;   
-    --player-h:          70px;   
-    --sidebar-w:         240px;  
-
-
-    /* --- [ 5. ЦВЕТОВАЯ ПАЛИТРА ] --- */
-    
-    --bg-deep:           #121214; 
-    --panel-color:       #232426; 
-    --sidebar-bg:        #121214; 
-    --border-lines:      #3A3B3D; 
-    --search-bg:         #303236; 
-    --active-btn:        #303236;
-    
-    --text-white:        #FFFFFF;
-    --text-grey:         #a0a0a0;
-    --accent-blue:       #0055FF;
-    --hover-bg:          rgba(255, 255, 255, 0.05);
-    
+    /* [5. ЦВЕТА] */
+    --bg-deep: #121214; --panel-color: #232426; --sidebar-bg: #121214; 
+    --border-lines: #3A3B3D; --search-bg: #303236; --active-btn: #303236;
+    --text-white: #FFFFFF; --text-grey: #a0a0a0; --accent-blue: #0055FF; --hover-bg: rgba(255, 255, 255, 0.05);
     --font-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-    /* --- [ 6. СТРАНИЦА ПРОФИЛЯ ] --- */
-    
-    --profile-top-margin: 50px;
-    --profile-ava-size:   100px;
-    --profile-gap:        20px;
-    --profile-text-size:  24px;
-    --profile-text-color: #FFFFFF;
-
-    /* ============================================================== */
+    /* [6. ПРОФИЛЬ] */
+    --profile-top-margin: 50px; --profile-ava-size: 100px; --profile-gap: 20px;
+    --profile-text-size: 24px; --profile-text-color: #FFFFFF;
 }
 
-body {
-    margin: 0; padding: 0;
-    font-family: var(--font-base);
-    background-color: var(--bg-deep);
-    color: var(--text-white);
-    height: 100vh; overflow: hidden;
-    display: flex; flex-direction: column;
-}
-
-/* Общий сброс для изображений */
+body { margin: 0; padding: 0; font-family: var(--font-base); background-color: var(--bg-deep); color: var(--text-white); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 img { display: block; max-width: 100%; }
 
-/* === ВЕРХНЯЯ ПАНЕЛЬ === */
+/* ШАПКА */
 .top-header { height: var(--header-h); width: 100%; background-color: var(--panel-color); display: flex; z-index: 200; flex-shrink: 0; border-bottom: 1px solid var(--border-lines); }
-
-.header-logo-area { 
-    width: var(--sidebar-w); height: 100%; 
-    background-color: var(--panel-color); 
-    flex-shrink: 0; 
-    display: flex; align-items: center; justify-content: flex-start; 
-    padding-left: var(--logo-left-pad); 
-    box-sizing: border-box; overflow: visible; 
-    pointer-events: none; cursor: default; 
-} 
+.header-logo-area { width: var(--sidebar-w); height: 100%; background-color: var(--panel-color); flex-shrink: 0; display: flex; align-items: center; justify-content: flex-start; padding-left: var(--logo-left-pad); box-sizing: border-box; overflow: visible; pointer-events: none; cursor: default; } 
 .header-logo-area > .logo-click-zone { transform: translateY(calc(var(--logo-group-shift) * -1)); }
 
-.logo-click-zone {
-    pointer-events: auto; cursor: pointer; display: flex; align-items: center;
-    height: var(--logo-text-size); max-height: var(--logo-text-size);
-    padding: var(--click-expand-y) var(--click-expand-x);
-    overflow: visible; user-select: none; -webkit-user-select: none;
-    background-color: transparent; 
-}
+.logo-click-zone { pointer-events: auto; cursor: pointer; display: flex; align-items: center; height: var(--logo-text-size); max-height: var(--logo-text-size); padding: var(--click-expand-y) var(--click-expand-x); overflow: visible; user-select: none; -webkit-user-select: none; background-color: transparent; }
 .app-logo { max-height: var(--logo-height); width: auto; display: block; flex-shrink: 0; }
-.app-name {
-    font-family: 'Onder', sans-serif; font-size: var(--logo-text-size);   
-    color: #fff; margin-left: var(--logo-text-gap); line-height: 1;      
-    letter-spacing: 1px; white-space: nowrap; display: block; position: relative; top: 2px; 
-}
+.app-name { font-family: 'Onder', sans-serif; font-size: var(--logo-text-size); color: #fff; margin-left: var(--logo-text-gap); line-height: 1; letter-spacing: 1px; white-space: nowrap; display: block; position: relative; top: 2px; }
 
 .header-content { flex-grow: 1; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; overflow: hidden; }
 .header-search { flex-grow: 1; display: flex; justify-content: center; margin-right: 10px; }
@@ -145,7 +59,7 @@ img { display: block; max-width: 100%; }
 .icon-btn:hover { border-color: #fff; color: #fff; }
 .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background-color: #333; border: 1px solid #444; cursor: pointer; }
 
-/* === ОСНОВНОЕ ТЕЛО (SIDEBAR + MAIN) === */
+/* === ТЕЛО (SIDEBAR + MAIN) === */
 .middle-container { flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative; }
 .sidebar { width: var(--sidebar-w); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-lines); display: flex; flex-direction: column; padding: 24px 10px; overflow-y: auto; flex-shrink: 0; box-sizing: border-box; transition: transform 0.3s ease; }
 .nav-section { margin-bottom: 24px; }
@@ -159,135 +73,60 @@ img { display: block; max-width: 100%; }
 .nav-icon { width: 14px; height: 14px; margin-right: 10px; opacity: 0.6; }
 .nav-item.active .nav-icon { opacity: 1; }
 
-.main-content { 
-    flex-grow: 1; background-color: var(--bg-deep); 
-    overflow-y: auto; padding: 0; 
-}
+.main-content { flex-grow: 1; background-color: var(--bg-deep); overflow-y: auto; padding: 0; }
 
-/* === БАННЕРЫ (СПИСОК) === */
-.banners-container {
-    display: flex; flex-direction: row; align-items: flex-start;
-    padding-top: var(--ads-top-margin); 
-    padding-left: var(--ads-left-margin); 
-    gap: var(--ads-gap);
-    
-    /* ОБЯЗАТЕЛЬНО: wrap позволяет переносить баннеры, если экран чуть меньше суммы ширин */
-    flex-wrap: wrap; 
-}
+/* === БАННЕРЫ === */
+.banners-container { display: flex; flex-direction: row; align-items: flex-start; padding-top: var(--ads-top-margin); padding-left: var(--ads-left-margin); gap: var(--ads-gap); flex-wrap: wrap; }
+.ad-card { display: block; position: relative; width: var(--ads-width); max-width: 100%; height: var(--ads-height); border-radius: var(--ads-radius); overflow: hidden; background-color: #232426; flex-shrink: 0; }
+.ad-image { position: absolute; width: 100%; height: 100%; object-fit: cover; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--base-scale, 1)); pointer-events: none; }
+.tg-img { --base-scale: var(--zoom-telegram); } .ds-img { --base-scale: var(--zoom-discord); }
 
-/* Рамка баннера */
-.ad-card {
-    display: block; position: relative;
-    
-    /* Задаем базовую ширину из конфига */
-    width: var(--ads-width); 
-    /* Добавляем ограничитель, чтобы на средних экранах не улетало вправо */
-    max-width: 100%;
-    
-    height: var(--ads-height);
-    border-radius: var(--ads-radius);
-    overflow: hidden; background-color: #232426; 
-}
-
-/* Картинка */
-.ad-image {
-    position: absolute; width: 100%; height: 100%; object-fit: cover; 
-    left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--base-scale, 1));
-    pointer-events: none;
-}
-.tg-img { --base-scale: var(--zoom-telegram); }
-.ds-img { --base-scale: var(--zoom-discord); }
-
-/* Кнопка внутри баннера */
-.ad-btn {
+.ad-btn { 
     position: absolute; bottom: var(--btn-bottom); left: 50%; transform: translateX(-50%);
     width: var(--btn-width); height: var(--btn-height);
     background-color: var(--btn-bg-color); color: var(--btn-text-color);
-    border-radius: var(--btn-radius); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--btn-font-size); cursor: pointer; transition: transform 0.1s ease, opacity 0.2s;
-    font-family: 'Onder', sans-serif; padding-top: 3px;
-    pointer-events: auto;
+    border-radius: var(--btn-radius); 
+    font-family: 'Onder', sans-serif; font-size: var(--btn-font-size); font-weight: normal; 
+    text-decoration: none; display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; padding-top: 3px; pointer-events: auto;
+    transition: transform 0.1s ease, opacity 0.2s; 
 }
 .telegram-card .ad-btn { background-color: var(--btn-bg-telegram); }
 .discord-card .ad-btn  { background-color: var(--btn-bg-discord); }
-.ad-btn:hover { opacity: 0.9; }
-.ad-btn:active { transform: translateX(-50%) scale(0.95); }
+.ad-btn:hover { opacity: 0.9; } .ad-btn:active { transform: translateX(-50%) scale(0.95); }
 
 /* === ПРОФИЛЬ === */
-.profile-page-content {
-    display: flex; flex-direction: column; align-items: center;    
-    padding-top: var(--profile-top-margin); width: 100%;
-}
-.profile-pic-big {
-    width: var(--profile-ava-size); height: var(--profile-ava-size);
-    border-radius: 50%; object-fit: cover;
-    border: 2px solid #333; background-color: #222;
-    margin-bottom: var(--profile-gap); 
-}
-.profile-username {
-    font-size: var(--profile-text-size);
-    color: var(--profile-text-color);
-    font-weight: 600;
-}
+.profile-page-content { display: flex; flex-direction: column; align-items: center; padding-top: var(--profile-top-margin); width: 100%; }
+.profile-pic-big { width: var(--profile-ava-size); height: var(--profile-ava-size); border-radius: 50%; object-fit: cover; border: 2px solid #333; background-color: #222; margin-bottom: var(--profile-gap); }
+.profile-username { font-size: var(--profile-text-size); color: var(--profile-text-color); font-weight: 600; }
 
-/* === НИЗ (Скрыт по умолчанию) === */
+/* === НИЗ === */
 .bottom-player { height: var(--player-h); width: 100%; background-color: var(--panel-color); border-top: 1px solid var(--border-lines); z-index: 200; flex-shrink: 0; display: none; align-items: center; justify-content: space-between; padding: 0 32px; box-sizing: border-box; position: relative; }
 .progress-line { position: absolute; top: -1px; left: 0; width: 100%; height: 2px; background: transparent; cursor: pointer; }
 .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; }
 .player-controls { display: flex; align-items: center; gap: 24px; width: 150px; }
 .ctrl-btn { cursor: default; opacity: 0.6; transition: 0.2s; }
-.ctrl-btn:hover { opacity: 1; transform: scale(1.05); }
-.ctrl-btn.small { width: 12px; }
-.ctrl-btn.main { width: 14px; opacity: 0.9; }
+.ctrl-btn:hover { opacity: 1; transform: scale(1.05); } .ctrl-btn.small { width: 12px; } .ctrl-btn.main { width: 14px; opacity: 0.9; }
 .player-info { flex-grow: 1; display: flex; align-items: center; justify-content: center; gap: 16px; }
 .track-cover-placeholder { width: 32px; height: 32px; background: #222; border: 1px solid #333; border-radius: 2px; opacity: 0; }
 .track-text { display: flex; flex-direction: column; text-align: left; justify-content: center; }
-.track-title { font-size: 13px; font-weight: 600; color: #fff; }
-.track-tags { font-size: 11px; color: #666; }
+.track-title { font-size: 13px; font-weight: 600; color: #fff; } .track-tags { font-size: 11px; color: #666; }
 .player-volume { display: flex; align-items: center; gap: 16px; width: 150px; justify-content: flex-end; }
 .vol-icon { width: 14px; opacity: 0.6; }
 .volume-track-container { position: relative; width: 100px; height: 20px; display: flex; align-items: center; cursor: default; }
-.vol-bg-line { position: absolute; width: 100%; height: 4px; background: #333; border-radius: 2px; }
-.vol-fill-line { position: absolute; left: 0; height: 4px; background: #b3b3b3; border-radius: 2px; pointer-events: none; }
+.vol-bg-line, .vol-fill-line { position: absolute; left: 0; height: 4px; border-radius: 2px; }
+.vol-bg-line { width: 100%; background: #333; } .vol-fill-line { background: #b3b3b3; pointer-events: none; }
 .vol-knob { position: absolute; width: 12px; height: 12px; background: #fff; border-radius: 50%; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.5); cursor: default; }
 .volume-track-container:hover .vol-knob { transform: translateX(-50%) scale(1.1); }
 .volume-track-container:hover .vol-fill-line { background: #fff; }
 
-/* ============================================================== */
-/* ================ 📱 МОБИЛЬНАЯ АДАПТАЦИЯ 📱 ================= */
-/* ============================================================== */
-
+/* === MOBILE ADAPTATION === */
 @media (max-width: 768px) {
-    /* На телефоне переписываем логику, чтобы все влезло */
-    :root {
-        --logo-left-pad: 16px; /* Чуть меньше отступ логотипа */
-    }
-
-    .header-logo-area {
-        display: flex !important;
-        pointer-events: auto;
-    }
-    
-    .sidebar { display: none !important; }
-    .header-search { display: none; }
-    .credits-label { display: none; } 
+    :root { --logo-left-pad: 16px; }
+    .header-logo-area { display: flex !important; width: auto; pointer-events: auto; padding-left: 15px; border: none; }
+    .header-search, .sidebar, .credits-label { display: none !important; }
     .header-right { gap: 10px; width: auto; padding-right: 15px; }
-
-    /* БАННЕРЫ В КОЛОНКУ */
-    .banners-container {
-        flex-direction: column;
-        padding: 20px 16px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-    
-    .ad-card {
-        width: 100% !important; /* На весь экран */
-        /* Если оставить высоту 300, на маленьком экране это много,
-           можно сделать чуть меньше (220px), или оставить 300px (var(--ads-height)) */
-        height: 220px; 
-    }
-    
-    .profile-page-content {
-        padding-top: 30px;
-    }
+    .banners-container { flex-direction: column; padding: 20px 16px; width: 100%; box-sizing: border-box; }
+    .ad-card { width: 100% !important; height: 220px; }
+    .profile-page-content { padding-top: 30px; }
 }
