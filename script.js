@@ -26,7 +26,6 @@ if (user) {
 
     loadUserCredits(user.id);
 } else {
-    // В браузере
     console.log("Browser mode");
     profileUsernameText.innerText = "@User";
     loadUserCredits("test_user_id");
@@ -45,31 +44,37 @@ function loadUserCredits(userId) {
 // === 3. НАВИГАЦИЯ ===
 
 function openPage(btnElement, pageId) {
+    // Управление активной кнопкой
     if (btnElement) {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         btnElement.classList.add('active');
     } else {
+        // Если перешли не через сайдбар (а через лого, профиль или плюс)
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     }
 
+    // Скрываем все страницы
     const allPages = document.querySelectorAll('.content-frame');
     allPages.forEach(page => {
         page.style.display = 'none';
     });
 
+    // Показываем целевую страницу
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.style.display = 'block';
     }
 
+    // Управление видимостью плеера (Главная, Профиль и Планы — БЕЗ ПЛЕЕРА)
     const player = document.querySelector('.bottom-player');
-    if (pageId === 'page-home' || pageId === 'page-profile') {
+    if (pageId === 'page-home' || pageId === 'page-profile' || pageId === 'page-plans') {
         player.style.display = 'none';
     } else {
         player.style.display = 'flex';
     }
 }
 
+// === 4. ГРОМКОСТЬ ===
 const volContainer = document.getElementById('vol-container');
 const volKnob = document.getElementById('vol-knob');
 const volFill = document.getElementById('vol-fill');

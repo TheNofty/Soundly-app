@@ -3,37 +3,55 @@
     height: var(--header-h); width: 100%;
     background-color: var(--panel-color);
     border-bottom: 1px solid var(--border-lines);
-    display: flex; z-index: 200; flex-shrink: 0;
+    display: flex; align-items: center; /* Центрирует ВСЁ по вертикали */
+    z-index: 200; flex-shrink: 0;
 }
 
+/* 1. ЛЕВАЯ ЧАСТЬ (ЛОГО) */
 .header-logo-area {
     width: var(--sidebar-w); height: 100%;
     background-color: var(--panel-color);
-    flex-shrink: 0; display: flex; align-items: center; padding-left: var(--logo-left-pad);
+    flex-shrink: 0; 
+    display: flex; align-items: center; /* Центр по высоте */
+    justify-content: flex-start;
+    padding-left: var(--logo-left-pad); 
     box-sizing: border-box; cursor: default;
-}
+    border-right: none; 
+} 
+/* Убрал здесь transform */
 .header-logo-area > .logo-click-zone { transform: translateY(0); }
 
 .logo-click-zone {
-    cursor: pointer; display: flex; align-items: center;
-    height: var(--logo-text-size);
-    user-select: none;
+    pointer-events: auto; cursor: pointer; 
+    display: flex; align-items: center; /* Центр картинки и текста */
+    height: auto; 
+    padding: var(--click-expand-y) var(--click-expand-x);
+    user-select: none; background-color: transparent; 
 }
-.app-logo { max-height: var(--logo-height); width: auto; }
+.app-logo { max-height: var(--logo-height); width: auto; display: block; flex-shrink: 0; }
 .app-name {
-    font-family: 'Onder', sans-serif; font-size: var(--logo-text-size);
-    color: #fff; margin-left: 0px; letter-spacing: 1px; position: relative; top: 2px;
+    font-family: 'Onder', sans-serif; font-size: var(--logo-text-size);   
+    color: #fff; margin-left: var(--logo-text-gap); line-height: 1;      
+    letter-spacing: 1px; white-space: nowrap; display: block; 
+    /* УБРАЛ TOP: 2PX. Теперь всё по честному центру */
+    position: static; 
 }
 
+/* 2. ЦЕНТР (ПОИСК) */
 .header-content {
-    flex-grow: 1; display: flex; align-items: center; justify-content: space-between;
+    flex-grow: 1; height: 100%;
+    display: flex; align-items: center; /* Центр */
+    justify-content: space-between;
     padding: 0 32px; overflow: hidden;
 }
 
-/* Поиск */
 .header-search { flex-grow: 1; display: flex; justify-content: center; margin-right: 10px; }
 .search-input-wrapper { position: relative; width: 100%; max-width: 480px; }
-.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #ccc; width: 16px; }
+/* Иконка поиска точно по центру */
+.search-icon { 
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%); 
+    color: #ccc; width: 16px; height: 16px;
+}
 .search-input-wrapper input {
     width: 100%; height: 36px;
     background-color: var(--search-bg); border: none; border-radius: 99px;
@@ -42,17 +60,49 @@
 }
 .search-input-wrapper input:focus { background-color: #3a3c40; }
 
-.header-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-.credits-pill { display: flex; align-items: center; font-size: 13px; font-weight: 700; color: #fff; }
-.plus-icon { width: 14px; height: 14px; margin-right: 12px; opacity: 0.8; cursor: pointer; }
-.credits-label { color: var(--text-grey); font-weight: 400; margin-left: 4px; }
+/* 3. ПРАВАЯ ЧАСТЬ */
+.header-right { 
+    display: flex; align-items: center; gap: 16px; /* Между группой Кредитов, Вопросом и Аватаром */
+    justify-content: flex-end; flex-shrink: 0; 
+    height: 100%;
+}
+
+.credits-pill { 
+    display: flex; align-items: center; justify-content: flex-end; 
+    font-weight: 700; color: #fff; height: 100%; 
+    font-size: var(--credits-text-size);
+}
+
+.plus-icon { 
+    width: var(--credits-icon-size); 
+    height: var(--credits-icon-size); 
+    margin-right: var(--credits-gap); 
+    
+    opacity: 0.8; 
+    cursor: pointer; 
+    
+    /* УДАЛИЛСЯ ОТСЮДА position И top, ЧТОБЫ ВСТАЛО ПО ЦЕНТРУ САМО */
+}
+.plus-icon:hover { opacity: 1; }
+
+.credits-count { margin-right: var(--credits-gap); }
+
+.credits-label { color: var(--text-grey); font-weight: 400; white-space: nowrap; } 
+
 .icon-btn {
     background: none; border: 1px solid #555; border-radius: 50%;
     width: 24px; height: 24px; color: var(--text-grey); cursor: pointer;
     display: flex; align-items: center; justify-content: center; font-size: 12px;
 }
 .icon-btn:hover { border-color: #fff; color: #fff; }
+
 .user-avatar { 
-    width: 32px; height: 32px; border-radius: 50%; object-fit: cover; 
-    background-color: #333; border: 1px solid #444; cursor: pointer; 
+    width: 32px; 
+    height: 32px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    background-color: #333; 
+    /* Дописал: тип линии solid, цвет #444, и точку с запятой */
+    border: 1px solid #444; 
+    cursor: pointer;
 }
