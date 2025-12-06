@@ -1,54 +1,42 @@
-/* === АДАПТАЦИЯ ИНТЕРФЕЙСА === */
+/* === МОБИЛЬНАЯ АДАПТАЦИЯ (САЙДБАР ОСТАЕТСЯ) === */
 
 @media (max-width: 1000px) {
     
-    :root { 
-        /* Чуть уменьшим отступы логотипа */
-        --logo-left-pad: 15px; 
+    /* 1. ГЛАВНОЕ: Мы НЕ СКРЫВАЕМ .sidebar */
+    /* Сайдбар остается на месте, шириной 240px (или сколько в settings) */
+
+    /* 2. Немного уменьшим пустое место в настройках, чтобы влезло */
+    :root {
+        /* Можешь тут уменьшить ширину сайдбара, например до 200px, 
+           но если хочешь точь-в-точь как на ПК - не трогай */
+        /* --sidebar-w: 200px; */ 
     }
 
-    /* Логика шапки: Логотип видим */
-    .header-logo-area { 
-        width: auto !important; 
-        padding-left: 10px; 
-        border-right: none;
-    }
-
-    /* Сайдбар: ОСТАВЛЯЕМ ВИДИМЫМ. 
-       Не скрываем его (display: none убрал). */
-    
-    /* Скрываем только Поиск (места не хватит) и лишний текст */
-    .header-search, .credits-label { 
+    /* 3. Убираем только совсем мелочи, если мешают */
+    .credits-label { 
         display: none !important; 
     }
 
-    /* Поджимаем правую часть шапки */
-    .header-right { 
-        gap: 10px; 
-        width: auto; 
-        padding-right: 15px; 
-    }
-
-    /* Баннеры выстраиваем вертикально, чтобы влезали в узкую правую часть */
+    /* 4. Баннеры: выстраиваем их вертикально, иначе они порвутся */
     .banners-container { 
         flex-direction: column; 
-        padding: 20px 15px; 
         width: 100%; 
-        box-sizing: border-box; 
+        box-sizing: border-box;
+        padding-right: 15px; /* Чтобы справа не прилипало */
     }
     
     .ad-card { 
-        width: 100% !important; 
-        height: 200px; 
+        width: 100% !important; /* Баннер тянется */
+        height: 220px; 
     }
 
-    /* Отступы для остальных страниц */
-    .profile-page-content { 
-        padding-top: 30px; 
+    /* 5. Подправляем плеер и шапку */
+    .bottom-player, .top-header { 
+        padding-left: 10px; 
+        padding-right: 10px;
     }
-
-    /* Плеер чуть компактнее по краям */
-    .bottom-player { 
-        padding: 0 10px; 
+    
+    .header-right { 
+        gap: 8px; 
     }
 }
