@@ -1,17 +1,10 @@
 @media (max-width: 768px) {
     :root { --logo-left-pad: 16px; }
-    
     .header-logo-area { display: flex !important; width: auto; pointer-events: auto; padding-left: 15px; border: none; }
-    
-    /* Скрываем на мобиле лишнее */
-    .sidebar, .header-search, .credits-label { display: none !important; }
-    
+    .header-search, .sidebar, .credits-label { display: none !important; }
     .header-right { gap: 10px; width: auto; padding-right: 15px; }
-    
-    /* Баннеры в столбик */
     .banners-container { flex-direction: column; padding: 20px 16px; width: 100%; box-sizing: border-box; }
     .ad-card { width: 100% !important; height: 220px; }
-    
     .profile-page-content { padding-top: 30px; }
     .bottom-player { padding: 0 10px; }
 }

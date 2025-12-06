@@ -1,9 +1,13 @@
-.sidebar { 
-    width: var(--sidebar-w); background-color: var(--sidebar-bg); 
-    border-right: 1px solid var(--border-lines); 
-    display: flex; flex-direction: column; padding: 24px 10px; 
-    overflow-y: auto; flex-shrink: 0; box-sizing: border-box; 
-    transition: transform 0.3s ease; 
+.middle-container {
+    flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative;
+}
+
+.sidebar {
+    width: var(--sidebar-w); background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-lines);
+    display: flex; flex-direction: column; padding: 24px 10px;
+    overflow-y: auto; flex-shrink: 0; user-select: none;
+    box-sizing: border-box;
 }
 
 .nav-section { margin-bottom: 24px; }
@@ -11,19 +15,22 @@
 .section-title { font-size: 11px; font-weight: 700; color: #666; margin-left: 12px; text-transform: uppercase; }
 .add-icon { color: var(--text-grey); cursor: pointer; }
 
-/* КНОПКИ */
-.nav-item { 
-    display: flex; align-items: center; padding: 10px 12px; 
-    border-radius: 6px; cursor: pointer; font-size: 14px; 
-    font-weight: 500; color: var(--text-grey); 
-    transition: background 0.1s ease, color 0.1s ease; margin-bottom: 2px; 
+/* СТИЛИ КНОПОК МЕНЮ */
+.nav-item {
+    display: flex; align-items: center; padding: 10px 12px;
+    border-radius: 6px; cursor: pointer;
+    font-size: 14px; font-weight: 500; color: var(--text-grey);
+    transition: background 0.1s ease, color 0.1s ease;
+    margin-bottom: 2px;
 }
+
+/* === ВАЖНАЯ ЛОГИКА ЦВЕТА === */
 .nav-item:hover { color: #fff; background-color: var(--hover-bg); }
 .nav-item.active { background: var(--active-btn); color: #fff; font-weight: 600; }
 
-.badge-new { 
-    background: var(--accent-blue); color: #fff; font-size: 9px; 
-    padding: 2px 5px; border-radius: 3px; margin-left: 8px; font-weight: 700; 
+.badge-new {
+    background: var(--accent-blue); color: #fff; font-size: 9px;
+    padding: 2px 5px; border-radius: 3px; margin-left: 8px; font-weight: 700;
 }
 .main-nav .nav-item { font-size: 14px; }
 .nav-icon { width: 14px; height: 14px; margin-right: 10px; opacity: 0.6; }
