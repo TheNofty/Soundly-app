@@ -2,30 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ВАЖНО: ЭТА СТРОКА ЗАСТАВЛЯЕТ ТЕЛЕФОН ПОКАЗЫВАТЬ ВСЕ КАК НА ПК -->
+    <meta name="viewport" content="width=1000">
+    
     <title>Soundly App</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- ПОДКЛЮЧАЕМ СТРУКТУРУ ИЗ ПАПКИ CSS -->
+    <!-- Подключаем только СТРУКТУРУ. Никаких mobile.css -->
     <link rel="stylesheet" href="css/settings.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/content.css">
     <link rel="stylesheet" href="css/player.css">
-    <link rel="stylesheet" href="css/adaptive.css">
 </head>
 <body>
 
-    <!-- HEADER -->
+    <!-- ВЕРХ -->
     <div class="top-header">
         <div class="header-logo-area" onclick="openPage(null, 'page-home')">
             <div class="logo-click-zone">
-                <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="Soundly" onerror="this.style.display='none'">
+                <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="S" onerror="this.style.display='none'">
                 <span class="app-name">SOUNDLY</span>
             </div>
         </div> 
-
         <div class="header-content">
             <div class="header-search">
                 <div class="search-input-wrapper">
@@ -35,7 +36,6 @@
                     <input type="text" placeholder="Search Splice">
                 </div>
             </div>
-
             <div class="header-right">
                 <div class="credits-pill">
                     <img src="Interface/Icons/Top_ui/Plus.png" class="plus-icon" alt="+" onerror="this.style.display='none'">
@@ -48,8 +48,10 @@
         </div>
     </div>
 
-    <!-- MAIN BODY -->
+    <!-- ЦЕНТР -->
     <div class="middle-container">
+        
+        <!-- БОКОВАЯ ПАНЕЛЬ (Теперь она не исчезнет) -->
         <div class="sidebar">
             <div class="nav-section main-nav">
                 <div class="nav-item active" onclick="openPage(this, 'page-browse')"><span>Browse</span></div>
@@ -76,23 +78,18 @@
             </div>
         </div>
 
+        <!-- КОНТЕНТ -->
         <div class="main-content">
             <div id="page-home" class="content-frame">
                 <div class="banners-container">
                     <div class="ad-card telegram-card">
-                        <img src="Interface/Pictures/Telegram_ads.png" alt="TG" class="ad-image tg-img">
+                        <img src="Interface/Pictures/Telegram_ads.png" alt="Telegram Ads" class="ad-image tg-img">
                         <a href="https://t.me/SoundlyApp" target="_blank" class="ad-btn">Open Telegram</a>
                     </div>
                     <div class="ad-card discord-card">
-                        <img src="Interface/Pictures/Discord_ads.png" alt="DS" class="ad-image ds-img">
+                        <img src="Interface/Pictures/Discord_ads.png" alt="Discord Ads" class="ad-image ds-img">
                         <a href="#" class="ad-btn">Open Discord</a>
                     </div>
-                </div>
-            </div>
-            <div id="page-profile" class="content-frame" style="display: none;">
-                <div class="profile-page-content">
-                    <img id="profile-big-avatar" class="profile-pic-big" src="Interface/Icons/default_avatar.png" alt="Profile">
-                    <div id="profile-username" class="profile-username">@loading</div>
                 </div>
             </div>
             <div id="page-browse" class="content-frame" style="display: none;"></div>
@@ -102,10 +99,16 @@
             <div id="page-stacks" class="content-frame" style="display: none;"></div>
             <div id="page-collections" class="content-frame" style="display: none;"></div>
             <div id="page-likes" class="content-frame" style="display: none;"></div>
+            <div id="page-profile" class="content-frame" style="display: none;">
+                <div class="profile-page-content">
+                    <img id="profile-big-avatar" class="profile-pic-big" src="Interface/Icons/default_avatar.png" alt="Profile">
+                    <div id="profile-username" class="profile-username">@loading</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- PLAYER -->
+    <!-- НИЗ -->
     <div class="bottom-player">
         <div class="progress-line"><div class="progress-fill" style="width: 0%;"></div></div>
         <div class="player-controls">
