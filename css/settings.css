@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'Onder';
+    src: url('../Interface/Fonts/ONDER-REGULAR.ttf') format('truetype');
+}
+
+:root {
+    /* [ 1. ЛОГОТИП ] */
+    --logo-height: 40px; --logo-text-size: 10px; --logo-text-gap: 0px;    
+    --logo-left-pad: 20px; --logo-group-shift: 0px;    
+    --click-expand-x: 0px; --click-expand-y: 0px;    
+
+    /* [ 2. БАННЕРЫ ] */
+    --ads-width: 500px; --ads-height: 300px; --ads-radius: 10px;   
+    --ads-left-margin: 50px; --ads-top-margin: 50px; --ads-gap: 20px;   
+    --zoom-telegram: 1.0; --zoom-discord: 1.0;    
+
+    /* [ 3. КНОПКИ БАННЕРОВ ] */
+    --btn-width: 150px; --btn-height: 30px; --btn-bottom: 20px;   
+    --btn-font-size: 5px; --btn-radius: 5px;    
+    --btn-bg-telegram: #279FDA; --btn-bg-discord: #0055FF; --btn-text-color: #FFFFFF; 
+
+    /* [ 4. РАЗМЕРЫ ПАНЕЛЕЙ ] */
+    --header-h: 60px; --player-h: 70px; --sidebar-w: 240px;  
+
+    /* [ 5. ЦВЕТОВАЯ ПАЛИТРА ] */
+    --bg-deep: #121214; --panel-color: #232426; --sidebar-bg: #121214; 
+    --border-lines: #3A3B3D; --search-bg: #303236; 
+    --text-white: #FFFFFF; --text-grey: #a0a0a0; --accent-blue: #0055FF;
+    
+    /* [ АКТИВНОСТЬ КНОПОК ] */
+    --active-btn: #303236;
+    --hover-bg: rgba(48, 50, 54, 0.5); /* 50% прозрачности */
+    
+    --font-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+    /* [ 6. ПРОФИЛЬ ] */
+    --profile-top-margin: 50px; --profile-ava-size: 100px; --profile-gap: 20px;
+    --profile-text-size: 24px; --profile-text-color: #FFFFFF;
+}
+
+body {
+    margin: 0; padding: 0;
+    font-family: var(--font-base);
+    background-color: var(--bg-deep);
+    color: var(--text-white);
+    height: 100vh; overflow: hidden;
+    display: flex; flex-direction: column;
+}
+img { display: block; max-width: 100%; }
