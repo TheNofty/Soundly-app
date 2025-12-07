@@ -2,15 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1000"> <!-- ЖЕСТКИЙ ВИД ПК -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Soundly App</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- !!! ВОТ СЮДА ВСТАВЬ ПОДКЛЮЧЕНИЕ БЛОКИРОВЩИКА !!! -->
-    <script src="block-device.js"></script>
-
-    <!-- СТРУКТУРА CSS -->
+    <!-- ПОДКЛЮЧАЕМ СТРУКТУРУ ИЗ ПАПКИ CSS -->
     <link rel="stylesheet" href="css/settings.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/sidebar.css">
@@ -19,12 +16,17 @@
 </head>
 <body>
 
+    <!-- === ЗАГЛУШКА ДЛЯ ТЕЛЕФОНОВ (По умолчанию скрыта) === -->
+    <div class="mobile-lock-screen">
+        <h2>Desktop Only</h2>
+        <p>На данном устройстве приложение не поддерживается</p>
+    </div>
+
     <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
     <div class="top-header">
-        <!-- ЛОГО -->
         <div class="header-logo-area" onclick="openPage(null, 'page-home')">
             <div class="logo-click-zone">
-                <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="S" onerror="this.style.display='none'">
+                <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="Soundly" onerror="this.style.display='none'">
                 <span class="app-name">SOUNDLY</span>
             </div>
         </div> 
@@ -41,8 +43,7 @@
 
             <div class="header-right">
                 <div class="credits-pill">
-                    <!-- ДОБАВИЛ ONCLICK НА ПЛЮС -->
-                    <img src="Interface/Icons/Top_ui/Plus.png" class="plus-icon" alt="+" onclick="openPage(null, 'page-plans')" onerror="this.style.display='none'">
+                    <img src="Interface/Icons/Top_ui/Plus.png" class="plus-icon" alt="+" onerror="this.style.display='none'">
                     <span class="credits-count" id="user-credits">0</span>
                     <span class="credits-label">credits</span>
                 </div>
@@ -52,12 +53,11 @@
         </div>
     </div>
 
-    <!-- СРЕДНЯЯ ЧАСТЬ -->
+    <!-- MAIN BODY -->
     <div class="middle-container">
-        <!-- САЙДБАР (Без изменений) -->
         <div class="sidebar">
             <div class="nav-section main-nav">
-                <div class="nav-item" onclick="openPage(this, 'page-browse')"><span>Browse</span></div>
+                <div class="nav-item active" onclick="openPage(this, 'page-browse')"><span>Browse</span></div>
                 <div class="nav-item" onclick="openPage(this, 'page-create')"><span>Create</span></div>
             </div>
             <div class="nav-section">
@@ -71,49 +71,35 @@
                     <div class="section-title">Collections</div><div class="add-icon">+</div>
                 </div>
                 <div class="nav-item" onclick="openPage(this, 'page-collections')">
-                    <img src="Interface/Icons/LeftSide_ui/AllCollections.png" class="nav-icon" onerror="this.style.display='none'"><span>All Collections</span>
+                    <img src="Interface/Icons/LeftSide_ui/AllCollections.png" class="nav-icon" onerror="this.style.display='none'">
+                    <span>All Collections</span>
                 </div>
                 <div class="nav-item" onclick="openPage(this, 'page-likes')">
-                    <img src="Interface/Icons/LeftSide_ui/Likes.png" class="nav-icon" onerror="this.style.display='none'"><span>Likes</span>
+                    <img src="Interface/Icons/LeftSide_ui/Likes.png" class="nav-icon" onerror="this.style.display='none'">
+                    <span>Likes</span>
                 </div>
             </div>
         </div>
 
-        <!-- КОНТЕНТ -->
         <div class="main-content">
-            
-            <!-- ГЛАВНАЯ (БАННЕРЫ) -->
             <div id="page-home" class="content-frame">
                 <div class="banners-container">
                     <div class="ad-card telegram-card">
-                        <img src="Interface/Pictures/Telegram_ads.png" alt="Telegram Ads" class="ad-image tg-img">
+                        <img src="Interface/Pictures/Telegram_ads.png" alt="TG" class="ad-image tg-img">
                         <a href="https://t.me/SoundlyApp" target="_blank" class="ad-btn">Open Telegram</a>
                     </div>
                     <div class="ad-card discord-card">
-                        <img src="Interface/Pictures/Discord_ads.png" alt="Discord Ads" class="ad-image ds-img">
+                        <img src="Interface/Pictures/Discord_ads.png" alt="DS" class="ad-image ds-img">
                         <a href="#" class="ad-btn">Open Discord</a>
                     </div>
                 </div>
             </div>
-
-            <!-- СТРАНИЦА: ПЛАНЫ И ЦЕНЫ (НОВАЯ) -->
-            <div id="page-plans" class="content-frame" style="display: none;">
-                <div class="plans-container">
-                    <div class="plans-title">Plans & Pricing</div>
-                    <div class="plans-subtitle">The right plan is as important as the right sound. Pick yours and press play.</div>
-                    <!-- Карточки пока не делаем -->
-                </div>
-            </div>
-
-            <!-- ПРОФИЛЬ -->
             <div id="page-profile" class="content-frame" style="display: none;">
                 <div class="profile-page-content">
                     <img id="profile-big-avatar" class="profile-pic-big" src="Interface/Icons/default_avatar.png" alt="Profile">
                     <div id="profile-username" class="profile-username">@loading</div>
                 </div>
             </div>
-
-            <!-- Остальные страницы -->
             <div id="page-browse" class="content-frame" style="display: none;"></div>
             <div id="page-sounds" class="content-frame" style="display: none;"></div>
             <div id="page-create" class="content-frame" style="display: none;"></div>
@@ -121,11 +107,10 @@
             <div id="page-stacks" class="content-frame" style="display: none;"></div>
             <div id="page-collections" class="content-frame" style="display: none;"></div>
             <div id="page-likes" class="content-frame" style="display: none;"></div>
-
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ -->
+    <!-- PLAYER -->
     <div class="bottom-player">
         <div class="progress-line"><div class="progress-fill" style="width: 0%;"></div></div>
         <div class="player-controls">
