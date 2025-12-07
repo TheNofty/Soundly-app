@@ -3,7 +3,7 @@
     height: var(--header-h); width: 100%;
     background-color: var(--panel-color);
     border-bottom: 1px solid var(--border-lines);
-    display: flex; align-items: center; /* Центр по высоте */
+    display: flex; align-items: center; /* Центрирует ВСЁ по вертикали */
     z-index: 200; flex-shrink: 0;
 }
 
@@ -11,37 +11,43 @@
 .header-logo-area {
     width: var(--sidebar-w); height: 100%;
     background-color: var(--panel-color);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: flex-start;
+    flex-shrink: 0; 
+    display: flex; align-items: center; /* Центр по высоте */
+    justify-content: flex-start;
     padding-left: var(--logo-left-pad); 
     box-sizing: border-box; cursor: default;
     border-right: none; 
 } 
-.header-logo-area > .logo-click-zone { transform: translateY(calc(var(--logo-group-shift) * -1)); }
+/* Убрал здесь transform */
+.header-logo-area > .logo-click-zone { transform: translateY(0); }
 
 .logo-click-zone {
-    pointer-events: auto; cursor: pointer; display: flex; align-items: center;
-    height: var(--logo-text-size);
+    pointer-events: auto; cursor: pointer; 
+    display: flex; align-items: center; /* Центр картинки и текста */
+    height: auto; 
     padding: var(--click-expand-y) var(--click-expand-x);
-    user-select: none;
-    background-color: transparent; 
+    user-select: none; background-color: transparent; 
 }
 .app-logo { max-height: var(--logo-height); width: auto; display: block; flex-shrink: 0; }
 .app-name {
     font-family: 'Onder', sans-serif; font-size: var(--logo-text-size);   
     color: #fff; margin-left: var(--logo-text-gap); line-height: 1;      
-    letter-spacing: 1px; white-space: nowrap; display: block; position: relative; top: 2px; 
+    letter-spacing: 1px; white-space: nowrap; display: block; 
+    /* УБРАЛ TOP: 2PX. Теперь всё по честному центру */
+    position: static; 
 }
 
 /* 2. ЦЕНТР (ПОИСК) */
 .header-content {
     flex-grow: 1; height: 100%;
-    display: flex; align-items: center; 
+    display: flex; align-items: center; /* Центр */
     justify-content: space-between;
     padding: 0 32px; overflow: hidden;
 }
 
 .header-search { flex-grow: 1; display: flex; justify-content: center; margin-right: 10px; }
 .search-input-wrapper { position: relative; width: 100%; max-width: 480px; }
+/* Иконка поиска точно по центру */
 .search-icon { 
     position: absolute; left: 14px; top: 50%; transform: translateY(-50%); 
     color: #ccc; width: 16px; height: 16px;
@@ -56,8 +62,9 @@
 
 /* 3. ПРАВАЯ ЧАСТЬ */
 .header-right { 
-    display: flex; align-items: center; gap: 16px; 
-    justify-content: flex-end; flex-shrink: 0; height: 100%;
+    display: flex; align-items: center; gap: 16px; /* Между группой Кредитов, Вопросом и Аватаром */
+    justify-content: flex-end; flex-shrink: 0; 
+    height: 100%;
 }
 
 .credits-pill { 
@@ -70,11 +77,11 @@
     width: var(--credits-icon-size); 
     height: var(--credits-icon-size); 
     margin-right: var(--credits-gap); 
-    opacity: 0.8; cursor: pointer; 
-    position: relative; 
-    top: var(--credits-plus-shift); 
-    background: transparent !important;
-    border: none !important;
+    
+    opacity: 0.8; 
+    cursor: pointer; 
+    
+    /* УДАЛИЛСЯ ОТСЮДА position И top, ЧТОБЫ ВСТАЛО ПО ЦЕНТРУ САМО */
 }
 .plus-icon:hover { opacity: 1; }
 
@@ -90,46 +97,12 @@
 .icon-btn:hover { border-color: #fff; color: #fff; }
 
 .user-avatar { 
-    width: 32px; height: 32px; border-radius: 50%; object-fit: cover; 
-    background-color: #333; border: 1px solid #444; cursor: pointer; 
-}
-
-
-/* ==============================================
-   === ЖЕЛЕЗНАЯ БЛОКИРОВКА МОБИЛЬНЫХ ===
-   ============================================== */
-
-/* По умолчанию блокировщик СКРЫТ */
-.mobile-lock-screen {
-    display: none;
-}
-
-/* ЕСЛИ ШИРИНА ЭКРАНА МЕНЬШЕ 1000px (ТЕЛЕФОН/ПЛАНШЕТ) */
-@media (max-width: 1000px) {
-    
-    /* 1. Скрываем весь контент */
-    .top-header, 
-    .middle-container, 
-    .bottom-player {
-        display: none !important;
-    }
-
-    /* 2. Показываем заглушку */
-    .mobile-lock-screen {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-color: #121214; /* Твой цвет */
-        color: #fff;
-        z-index: 9999;
-        text-align: center;
-        font-family: var(--font-base);
-    }
-    
-    .mobile-lock-screen h2 { margin-bottom: 10px; color: var(--accent-blue); }
-    .mobile-lock-screen p { color: var(--text-grey); }
+    width: 32px; 
+    height: 32px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    background-color: #333; 
+    /* Дописал: тип линии solid, цвет #444, и точку с запятой */
+    border: 1px solid #444; 
+    cursor: pointer;
 }
