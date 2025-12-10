@@ -1,93 +1,191 @@
-/* ВЕРХНЯЯ ПАНЕЛЬ */
+/* ИСПРАВЛЕНИЕ БЕЛОГО НИЗА (САМОЕ ВАЖНОЕ) */
+html {
+    background-color: #121212; /* Черный фон на всю страницу */
+    height: 100%;
+}
+body {
+    margin: 0; padding: 0;
+    font-family: var(--font-base);
+    background-color: var(--bg-deep);
+    color: var(--text-white);
+    
+    height: 100vh; 
+    width: 100vw;
+    overflow: hidden; /* Скроллится только контент */
+    display: flex; flex-direction: column;
+}
+
+
+/* === ВЕРХНЯЯ ПАНЕЛЬ === */
 .top-header {
     height: var(--header-h); width: 100%;
     background-color: var(--panel-color);
-    border-bottom: 1px solid var(--border-lines);
-    display: flex; align-items: center; /* Центрирует ВСЁ по вертикали */
+    /* ГЛАВНОЕ ИСПРАВЛЕНИЕ: Центруем содержимое шапки по вертикали */
+    display: flex; align-items: center; 
     z-index: 200; flex-shrink: 0;
+    border-bottom: none;
 }
 
-/* 1. ЛЕВАЯ ЧАСТЬ (ЛОГО) */
+/* 1. РОДИТЕЛЬ (Фон) - БЕЗ ЛИНИИ */
 .header-logo-area {
     width: var(--sidebar-w); height: 100%;
     background-color: var(--panel-color);
     flex-shrink: 0; 
-    display: flex; align-items: center; /* Центр по высоте */
-    justify-content: flex-start;
-    padding-left: var(--logo-left-pad); 
-    box-sizing: border-box; cursor: default;
+    
+    /* УБРАЛИ ЛИНИЮ */
     border-right: none; 
-} 
-/* Убрал здесь transform */
-.header-logo-area > .logo-click-zone { transform: translateY(0); }
+    
+    display: flex; align-items: center; justify-content: flex-start;
+    padding-left: var(--logo-left-pad); 
+    
+    box-sizing: border-box; overflow: visible;
+    pointer-events: none; cursor: default;
+}
+.header-logo-area > .logo-click-zone { transform: translateY(calc(var(--logo-group-shift) * -1)); }
 
 .logo-click-zone {
-    pointer-events: auto; cursor: pointer; 
-    display: flex; align-items: center; /* Центр картинки и текста */
-    height: auto; 
+    cursor: pointer; pointer-events: auto;
+    display: inline-flex; align-items: center; /* Центр */
+    width: fit-content; /* Исправлен клик (сбоку не нажимается) */
+    
+    height: var(--logo-text-size); user-select: none;
     padding: var(--click-expand-y) var(--click-expand-x);
-    user-select: none; background-color: transparent; 
 }
+
 .app-logo { max-height: var(--logo-height); width: auto; display: block; flex-shrink: 0; }
+
+/* Текст (ИДЕАЛЬНЫЙ ЦЕНТР) */
 .app-name {
-    font-family: 'Onder', sans-serif; font-size: var(--logo-text-size);   
-    color: #fff; margin-left: var(--logo-text-gap); line-height: 1;      
-    letter-spacing: 1px; white-space: nowrap; display: block; 
-    /* УБРАЛ TOP: 2PX. Теперь всё по честному центру */
-    position: static; 
+    font-family: 'Onder', sans-serif; 
+    font-size: var(--logo-text-size);
+    color: #fff; 
+    margin-left: var(--logo-text-gap); 
+    
+    /* line-height: 1 убирает лишние отступы сверху/снизу внутри самой строки шрифта */
+    line-height: 1;      
+    
+    letter-spacing: 1px; 
+    display: block; 
+    
+    /* Сбрасываем в 0. Flexbox сам поставит центр к центру */
+    position: relative; 
+    top: 0; 
 }
 
-/* 2. ЦЕНТР (ПОИСК) */
+
+/* === КОНТЕНТ (Родитель) === */
 .header-content {
+    /* База для координат */
+    position: relative;
+    
     flex-grow: 1; height: 100%;
-    display: flex; align-items: center; /* Центр */
-    justify-content: space-between;
-    padding: 0 32px; overflow: hidden;
+    display: flex; align-items: center; 
+    /* Профиль улетит вправо */
+    justify-content: flex-end; 
+    
+    padding: 0 32px; overflow: visible;
 }
 
-.header-search { flex-grow: 1; display: flex; justify-content: center; margin-right: 10px; }
-.search-input-wrapper { position: relative; width: 100%; max-width: 480px; }
-/* Иконка поиска точно по центру */
-.search-icon { 
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%); 
-    color: #ccc; width: 16px; height: 16px;
+/* === ПОИСК (АБСОЛЮТНЫЙ ЦЕНТР ЭКРАНА) === */
+.header-search { 
+    position: absolute;
+    
+    /* 1. Ставим в середину РОДИТЕЛЯ (контента) */
+    left: 50%;          
+    
+    /* 2. СДВИГАЕМ НАЗАД: 
+          -50% от ширины самого поиска (чтобы центровать сам блок)
+          -120px (половина ширины сайдбара), чтобы компенсировать сдвиг вправо
+          Теперь он визуально ровно в центре всего окна приложения
+    */
+    transform: translateX(calc(-50% - 120px)); 
+    
+    display: flex; justify-content: center;
+    
+    /* Твоя ширина */
+    width: 450px; 
+    z-index: 10;
 }
+
+/* Обертка инпута (для позиционирования иконки) */
+.search-input-wrapper { 
+    position: relative; 
+    width: 100%; /* Занимает все 480px родителя */
+}
+
+/* === ПОИСК (КОЖА: Твой дизайн) === */
+/* Иконка */
+.search-icon { 
+    position: absolute; left: 14px; 
+    top: 50%; transform: translateY(-50%); 
+    color: #ccc; width: 16px; 
+}
+
+/* Поле ввода */
 .search-input-wrapper input {
-    width: 100%; height: 36px;
-    background-color: var(--search-bg); border: none; border-radius: 99px;
-    padding-left: 40px; padding-right: 20px; color: #fff;
-    font-size: 13px; font-weight: 500; outline: none; box-sizing: border-box;
+    width: 100%; 
+    height: 35px;
+    
+    background-color: var(--search-bg); 
+    border: 1px solid #333; /* Тонкая рамка как была у тебя */
+    border-radius: 99px;    /* Круглые края */
+    
+    padding-left: 40px; padding-right: 20px; 
+    color: #fff; font-size: 15px; font-weight: 500; outline: none; 
+    box-sizing: border-box;
 }
 .search-input-wrapper input:focus { background-color: #3a3c40; }
 
-/* 3. ПРАВАЯ ЧАСТЬ */
+
+/* === КРЕДИТЫ И ПРОФИЛЬ (ПРИЖАТЫ ВПРАВО) === */
 .header-right { 
-    display: flex; align-items: center; gap: 16px; /* Между группой Кредитов, Вопросом и Аватаром */
-    justify-content: flex-end; flex-shrink: 0; 
+    /* Не даем ему сжиматься */
+    flex-shrink: 0;
+    
+    display: flex; align-items: center; 
+    gap: 16px; 
     height: 100%;
+    
+    /* Убеждаемся, что он поверх всего и кликабелен */
+    z-index: 20;
+    position: relative;
 }
 
 .credits-pill { 
-    display: flex; align-items: center; justify-content: flex-end; 
-    font-weight: 700; color: #fff; height: 100%; 
-    font-size: var(--credits-text-size);
+    display: flex; align-items: center; 
+    justify-content: flex-end; 
+    height: 100%; color: #fff; 
 }
 
+/* ПЛЮС */
 .plus-icon { 
-    width: var(--credits-icon-size); 
-    height: var(--credits-icon-size); 
-    margin-right: var(--credits-gap); 
-    
-    opacity: 0.8; 
-    cursor: pointer; 
-    
-    /* УДАЛИЛСЯ ОТСЮДА position И top, ЧТОБЫ ВСТАЛО ПО ЦЕНТРУ САМО */
+    width: 14px; height: 14px; opacity: 0.8; cursor: pointer; 
+    object-fit: contain; min-width: 14px;
+    position: relative; top: 1px; /* Чуть ниже для визуала */
+    margin-right: var(--gap-plus-number); 
 }
 .plus-icon:hover { opacity: 1; }
 
-.credits-count { margin-right: var(--credits-gap); }
+/* ЦИФРА (Спускаем на 1px вниз) */
+.credits-count { 
+    font-family: var(--credits-count-font);
+    font-size: var(--credits-count-size); 
+    font-weight: var(--credits-count-weight);
+    
+    margin-right: var(--gap-number-label);
+    
+    position: relative; top: 1px; /* ФИКС ЗАВЫШЕННОГО ТЕКСТА */
+}
 
-.credits-label { color: var(--text-grey); font-weight: 400; white-space: nowrap; } 
+/* СЛОВО credits (Спускаем на 1px вниз) */
+.credits-label { 
+    font-family: var(--credits-label-font);
+    font-size: var(--credits-label-size);
+    font-weight: var(--credits-label-weight);
+    color: var(--text-grey); white-space: nowrap; 
+    
+    position: relative; top: 1px; /* ФИКС ЗАВЫШЕННОГО ТЕКСТА */
+} 
 
 .icon-btn {
     background: none; border: 1px solid #555; border-radius: 50%;
@@ -97,12 +195,6 @@
 .icon-btn:hover { border-color: #fff; color: #fff; }
 
 .user-avatar { 
-    width: 32px; 
-    height: 32px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    background-color: #333; 
-    /* Дописал: тип линии solid, цвет #444, и точку с запятой */
-    border: 1px solid #444; 
-    cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%; object-fit: cover; 
+    background-color: #333; border: 1px solid #444; cursor: pointer; 
 }

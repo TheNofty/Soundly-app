@@ -1,54 +1,214 @@
-.main-content { 
-    flex-grow: 1; background-color: var(--bg-deep); 
-    overflow-y: auto; padding: 0; 
+.main-content {
+    flex-grow: 1; background-color: var(--bg-deep);
+    overflow-y: auto; padding: 0;
 }
 .content-frame { width: 100%; height: 100%; }
 
-/* === БАННЕРЫ (HOME) === */
+/* --- БАННЕРЫ --- */
 .banners-container {
     display: flex; flex-direction: row; align-items: flex-start;
-    padding-top: var(--ads-top-margin); padding-left: var(--ads-left-margin); 
-    gap: var(--ads-gap); flex-wrap: wrap; 
+    padding-top: var(--ads-top-margin); padding-left: var(--ads-left-margin);
+    gap: var(--ads-gap); flex-wrap: wrap;
 }
 .ad-card {
-    display: block; position: relative; width: var(--ads-width); 
+    display: block; position: relative; width: var(--ads-width);
     max-width: 100%; height: var(--ads-height);
-    border-radius: var(--ads-radius); overflow: hidden; background-color: #232426; 
+    box-sizing: border-box; border-radius: var(--ads-radius); 
+    overflow: hidden; background-color: #232426;
 }
-.ad-image { position: absolute; width: 100%; height: 100%; object-fit: cover; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--base-scale, 1)); pointer-events: none; }
+.ad-image {
+    position: absolute; width: 100%; height: 100%; object-fit: cover;
+    left: 50%; top: 50%; transform: translate(-50%, -50%) scale(var(--base-scale, 1));
+    pointer-events: none;
+}
 .tg-img { --base-scale: var(--zoom-telegram); } .ds-img { --base-scale: var(--zoom-discord); }
+
+/* КНОПКА БАННЕРА */
 .ad-btn {
     position: absolute; bottom: var(--btn-bottom); left: 50%; transform: translateX(-50%);
     width: var(--btn-width); height: var(--btn-height);
     background-color: var(--btn-bg-color); color: var(--btn-text-color);
-    border-radius: var(--btn-radius); font-family: 'Onder', sans-serif;
-    font-size: var(--btn-font-size); font-weight: 700; text-decoration: none; 
-    display: flex; align-items: center; justify-content: center; padding-top: 3px; cursor: pointer;
-    transition: transform 0.1s ease, opacity 0.2s;
+    border-radius: var(--btn-radius); 
+    font-family: 'Onder', sans-serif; font-size: var(--btn-font-size); font-weight: 700;
+    
+    text-decoration: none; display: flex; align-items: center; justify-content: center;
+    padding-top: 3px; cursor: pointer; pointer-events: auto;
+    transition: transform 0.1s ease, opacity 0.2s; white-space: nowrap; z-index: 5;
 }
 .telegram-card .ad-btn { background-color: var(--btn-bg-telegram); }
 .discord-card .ad-btn  { background-color: var(--btn-bg-discord); }
-.ad-btn:hover { opacity: 0.9; } .ad-btn:active { transform: translateX(-50%) scale(0.95); }
+.ad-btn:hover { opacity: 0.9; }
+.ad-btn:active { transform: translateX(-50%) scale(0.95); }
 
-/* === PLANS & PRICING (НОВАЯ СТРАНИЦА) === */
+/* --- ПЛАНЫ И ТАРИФЫ --- */
+/* Контейнер страницы планов */
 .plans-container {
-    /* Наследуем те же отступы что и у баннеров, как ты просил */
-    padding-top: var(--ads-top-margin); 
-    padding-left: var(--ads-left-margin);
+    padding-top: var(--plans-padding-top); 
+    /* Оставляем отступ для заголовка слева */
+    padding-left: var(--ads-left-margin); 
+    padding-right: var(--ads-left-margin);
     width: 100%; box-sizing: border-box;
 }
-.plans-title {
-    font-family: var(--font-base); /* Не Onder, а обычный, как на скрине */
-    font-size: 32px; font-weight: 800; color: #FFFFFF;
-    margin-bottom: 10px; /* Отступ 10px до подзаголовка */
+
+/* Обертка карточек - ЦЕНТРИРОВАНИЕ */
+.plans-wrapper { 
+    display: flex; 
+    gap: var(--plans-gap); 
+    
+    /* Ставим карточки по центру экрана */
+    justify-content: center; 
+    
+    flex-wrap: wrap; 
+    padding-bottom: 100px; 
+    width: 100%;
+    
+    /* Сбрасываем все лишние отступы */
+    margin: 0;
+    margin-top: 20px;
 }
-.plans-subtitle {
-    font-family: var(--font-base);
-    font-size: 14px; font-weight: 400; color: var(--text-grey);
-    max-width: 600px;
+.plans-title { font-family: var(--font-base); font-size: 32px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; }
+.plans-subtitle { font-family: var(--font-base); font-size: 14px; font-weight: 400; color: var(--text-grey); max-width: 600px; margin-bottom: 50px; }
+.plans-wrapper { display: flex; gap: var(--plans-gap); flex-wrap: wrap; padding-bottom: 100px; }
+.plan-card { width: var(--plan-card-width); height: var(--plan-card-height); border-radius: var(--plan-radius); border: var(--plan-border); background: #151515; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
+/* Делаем рамку Белой */
+.plan-card.pro { border: 2px solid #FFFFFF; }
+.plan-header { margin-bottom: 20px; }
+.plan-name { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+.plan-desc { font-size: 13px; color: var(--text-grey); margin-bottom: 15px; }
+.plan-price { font-size: 28px; font-weight: 800; color: #fff; }
+.plan-period { font-size: 12px; color: var(--text-grey); font-weight: 400; }
+.plan-features { display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+.feature-row { font-size: 13px; color: #ccc; display: flex; align-items: center; gap: 10px; }
+.dot { width: 6px; height: 6px; background-color: #555; border-radius: 50%; }
+/* Делаем точки Белыми */
+.plan-card.pro .dot { background-color: #FFFFFF; }
+.plan-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+.btn-try { width: 100%; padding: 12px; border-radius: 99px; background: #333; color: #fff; font-family: var(--font-base); font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s; }
+.btn-try:hover { background: #444; }
+/* Делаем кнопку Белой, а текст Черным */
+.plan-card.pro .btn-try { 
+    background-color: #FFFFFF; 
+    color: #000000; 
+}
+.plan-card.pro .btn-try:hover { 
+    background-color: #e0e0e0; /* Чуть серый при наведении, чтобы видно было реакцию */
 }
 
-/* === ПРОФИЛЬ === */
+/* --- ПРОФИЛЬ --- */
 .profile-page-content { display: flex; flex-direction: column; align-items: center; padding-top: var(--profile-top-margin); width: 100%; }
 .profile-pic-big { width: var(--profile-ava-size); height: var(--profile-ava-size); border-radius: 50%; object-fit: cover; border: 2px solid #333; background-color: #222; margin-bottom: var(--profile-gap); }
-.profile-username { font-size: var(--profile-text-size); color: var(--profile-text-color); font-weight: 600; }
+.profile-username { font-size: var(--profile-text-size); color: var(--text-white); font-weight: 600; }
+
+/* === МОДАЛЬНОЕ ОКНО === */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
+
+/* ТУТ МЫ ЕГО ДЕЛАЕМ ШИРОКИМ */
+.payment-modal {
+    width: var(--modal-width); 
+    min-width: 500px; /* Чтобы не сжималось */
+    
+    background-color: var(--modal-bg-color); border: 1px solid #333; border-radius: 20px; 
+    padding: 30px; display: flex; flex-direction: column; position: relative; box-shadow: 0 10px 60px rgba(0,0,0,0.9);
+}
+
+.close-cross { position: absolute; top: 15px; right: 15px; color: #666; cursor: pointer; font-size: 20px; line-height: 1; z-index: 10; }
+.close-cross:hover { color: #fff; }
+
+.modal-header { margin-bottom: 20px; margin-top: 5px; }
+.modal-title { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; }
+.modal-subtitle { font-size: 14px; color: #aaa; font-weight: 400;}
+
+.payment-methods-row { display: flex; gap: 10px; margin-bottom: 25px; }
+
+/* ВЕРТИКАЛЬНАЯ КАРТОЧКА */
+.pay-option-card {
+    flex: 1; height: var(--card-pay-height);
+    background-color: #121212; border: 2px solid #333; border-radius: 10px; cursor: pointer;
+    
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--card-gap-inner);
+    
+    box-sizing: border-box; transition: 0.1s ease; user-select: none;
+}
+.pay-option-card:hover { border-color: #fff; }
+.pay-option-card.active { border-color: var(--accent-blue); background-color: #15151b; }
+
+.pay-price { font-size: var(--fs-pay-price); font-weight: 800; color: #fff; line-height: 1; }
+.pay-period { font-size: var(--fs-pay-period); font-weight: 500; color: #fff; }
+.pay-subtext { font-size: var(--fs-pay-subtext); font-weight: 600; }
+.pay-subtext.yellow { color: var(--text-try-yellow); }
+.pay-subtext.blue { color: var(--text-save-blue); }
+
+/* ДНО ОКНА */
+.modal-footer { 
+    display: flex; gap: 10px; height: 40px; margin-top: auto; 
+}
+
+/* === [ 1 ] БАЗОВЫЕ НАСТРОЙКИ ДЛЯ ОБЕИХ КНОПОК === */
+.btn-modal { 
+    flex: 1;            /* Растянуть кнопки равномерно */
+    padding: 0; 
+    border-radius: 50px; 
+    
+    /* ХИТРОСТЬ: Задаем рамку сразу, но прозрачную. */
+    /* Теперь, если ты поменяешь цвет или толщину ниже, она ПОЯВИТСЯ */
+    border: 1px solid transparent; 
+    
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 13px; 
+    transition: 0.2s; /* Плавное наведение */
+}
+
+/* === [ 2 ] КНОПКА ОПЛАТИТЬ === */
+.btn-modal.pay { 
+    background-color: var(--btn-pay-bg-color); /* Белый фон */
+    
+    /* ВАЖНО: Добавил переменную для цвета текста, чтобы было видно на белом */
+    color: var(--btn-pay-text-color);         
+    
+    border: 0px solid #fff; 
+}
+
+.btn-modal.pay:hover { 
+    opacity: 0.9; 
+    border-color: #e0e0e0;
+}
+
+/* === [ 3 ] КНОПКА ОТМЕНА === */
+.btn-modal.cancel { 
+    background-color: #333333; /* Темно-серый фон */
+    color: #FFFFFF; 
+    
+    /* ВОТ ТУТ МЕНЯЙ РАМКУ, ОНА ТЕПЕРЬ СРАБОТАЕТ */
+    border: 0px solid #444; 
+}
+
+.btn-modal.cancel:hover { 
+    background-color: #444444; 
+    border-color: #666;
+}
+
+/* ================================================= */
+/* === [ БЕЛАЯ СТРАНИЦА ОПЛАТЫ (ФИКСЫ) ] === */
+/* ================================================= */
+
+/* Делаем сам контейнер шапки прозрачным */
+#page-checkout .header-logo-area {
+    background-color: transparent; 
+    border: none;
+    
+    /* ВАЖНО: Разрешаем кликать в этой зоне (на всякий случай) */
+    pointer-events: auto; 
+}
+
+/* Делаем Текст черным */
+#page-checkout .app-name {
+    color: #000000;
+}
+
+/* Делаем Картинку черной (инвертируем белый в черный) */
+#page-checkout .app-logo {
+    filter: invert(1);
+    /* Если лого изначально цветное, а не белое - используй: brightness(0); */
+}

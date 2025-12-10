@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundly Login</title>
+    <link rel="stylesheet" href="auth_style.css">
+</head>
+<body>
+
+    <!-- 1. ФОНОВЫЙ СЛОЙ (ВЫНЕСЕН НАРУЖУ) -->
+    <div class="bg-animation-wrapper">
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+        <div class="scrolling-text">SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY SOUNDLY</div>
+    </div>
+
+    <!-- 2. СТЕКЛЯННАЯ ПАНЕЛЬ -->
+    <div class="auth-container">
+        
+        <h1 class="logo-text">SOUNDLY</h1>
+        
+        <div class="auth-tabs">
+            <div class="tab active" onclick="switchTab('login')">Log In</div>
+            <div class="tab" onclick="switchTab('register')">Sign Up</div>
+        </div>
+
+        <!-- ДАЛЬШЕ ИДУТ ФОРМЫ (НЕ ТРОГАЕМ) -->
+
+        <!-- === ВХОД (ОБНОВЛЕННЫЙ С ГЛАЗИКОМ) === -->
+        <div id="form-login" class="auth-form">
+            
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <input type="text" id="login-nick" placeholder="Username" class="auth-input">
+            </div>
+
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <input type="email" id="login-email" placeholder="Email Address" class="auth-input">
+            </div>
+
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                
+                <input type="password" id="login-pass" placeholder="Password" class="auth-input">
+                
+                <!-- ВОТ ОН, ГЛАЗИК -->
+                <div class="toggle-password" onclick="togglePass('login-pass', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </div>
+            </div>
+
+            <button class="auth-btn" onclick="loginUser()">LOG IN</button>
+            <div class="forgot-pass" onclick="resetPassword()">Forgot Password?</div>
+        </div>
+
+        <!-- === РЕГИСТРАЦИЯ (ОБНОВЛЕННАЯ С ГЛАЗИКОМ) === -->
+        <div id="form-register" class="auth-form" style="display: none;">
+            
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                <input type="text" id="reg-nick" placeholder="Username (4-15 chars)" class="auth-input">
+            </div>
+
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+                <input type="email" id="reg-email" placeholder="Email Address" class="auth-input">
+            </div>
+
+            <div class="input-box">
+                <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                
+                <input type="password" id="reg-pass" placeholder="Password (6+ chars)" class="auth-input">
+
+                <!-- ВОТ ОН, ГЛАЗИК -->
+                <div class="toggle-password" onclick="togglePass('reg-pass', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </div>
+            </div>
+
+            <button class="auth-btn outline" onclick="registerUser()">CREATE ACCOUNT</button>
+            <div class="forgot-pass" style="opacity: 0; pointer-events: none;">.</div>
+        </div>
+            
+            <!-- РАСПОРКА ДЛЯ ВЫРАВНИВАНИЯ ВЫСОТЫ -->
+            <div class="forgot-pass" style="opacity: 0; pointer-events: none;">Placeholder</div>
+        </div>
+
+        <p class="status-msg" id="status-message"></p>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <script src="auth_script.js"></script>
+</body>
+</html>

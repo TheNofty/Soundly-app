@@ -1,0 +1,367 @@
+@font-face {
+    font-family: 'Onder';
+    src: url('../Interface/Fonts/ONDER-REGULAR.ttf') format('truetype');
+}
+
+:root {
+    /* ======================= ⚙️ КОНФИГ СТЕКЛА (ИСПРАВЛЕННЫЙ) ⚙️ ======================= */
+    
+    /* 1. ГЛАВНОЕ ОКНО */
+    --win-width:          350px; 
+    
+    /* БЫЛО 0.60 -> СТАЛО 0.25 (Теперь это стекло, а не стена) */
+    --win-bg-color:       rgba(20, 20, 22, 0.25); 
+    
+    /* Граница чуть ярче для эффекта льда */
+    --win-border-col:     rgba(255, 255, 255, 0.15);
+    
+    --win-radius:         20px; 
+    --win-padding:        40px; 
+    --win-min-height:     550px; 
+
+    /* ОСТАЛЬНОЕ БЕЗ ИЗМЕНЕНИЙ */
+    --logo-font-size:     30px;  
+    --logo-margin-bot:    30px;   
+    --logo-color:         #FFFFFF;
+    --logo-line-height:   0.8;    
+
+    --btn-height:         50px;   
+    --btn-radius:         10px;   
+    --btn-login-fs:       15px;   
+    --btn-signup-fs:      10px;   
+    --btn-bg-color:       #FFFFFF; 
+    --btn-text-color:     #000000; 
+    --layout-gap:         15px; 
+
+    --tab-font-size:      15px;
+    --tab-margin-bot:     20px;
+    
+    --input-height:       50px;
+    --input-radius:       10px;
+    
+    --input-bg-color:     rgba(0, 0, 0, 0.5);
+    --input-font-size:    15px;
+    --input-icon-gap:     50px;
+
+    --forgot-font-size:   10px;
+    --forgot-color:       #bbbbbb;
+    --page-bg-color:      #050505;
+    
+    --font-ui:            'Inter', sans-serif;
+    --font-special:       'Onder', sans-serif;
+}
+
+/* === ДОБАВЬ ЭТО, ЧТОБЫ СТЕКЛО РАЗМЫВАЛОСЬ === */
+.auth-container {
+    width: var(--win-width);
+    min-height: var(--win-min-height);
+    justify-content: center;
+    background-color: var(--win-bg-color);
+    border: 1px solid var(--win-border-col);
+    border-radius: var(--win-radius);
+    padding: var(--win-padding);
+    box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+    display: flex; flex-direction: column; align-items: center;
+
+    /* ДВИЖОК РАЗМЫТИЯ */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+}
+/* === БАЗОВЫЕ НАСТРОЙКИ (FIX: Скроллбар убран) === */
+body {
+    margin: 0; padding: 0;
+    background-color: var(--page-bg-color);
+    font-family: var(--font-ui);
+    color: #fff;
+    
+    height: 100vh;
+    width: 100vw;
+    
+    /* !!! ВАЖНО: Это убирает прокрутку и чинит фон !!! */
+    overflow: hidden; 
+    
+    display: flex; justify-content: center; align-items: center;
+    user-select: none;
+}
+
+/* === FIX: УБИРАЕМ УРОДЛИВЫЙ БЕЛЫЙ ФОН АВТОЗАПОЛНЕНИЯ (СИНИЙ) === */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    /* Тень внутрь заливает фон тем же цветом, что у нас в переменной */
+    -webkit-box-shadow: 0 0 0 30px #18181a inset !important;
+    /* Текст делаем белым */
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.auth-container {
+    width: var(--win-width);
+    min-height: var(--win-min-height);
+    justify-content: center;
+    
+    background-color: var(--win-bg-color);
+    
+    /* ТОНКАЯ РАМКА СТЕКЛА */
+    border: 1px solid var(--win-border-col); 
+    /* Добавляем внутреннее свечение для 3D объема */
+    box-shadow: 
+        0 20px 50px rgba(0,0,0,0.8),         /* Глубокая тень внизу */
+        inset 0 0 0 1px rgba(255,255,255,0.05); /* Внутренний блик */
+
+    border-radius: var(--win-radius);
+    padding: var(--win-padding);
+    
+    display: flex; flex-direction: column; align-items: center;
+
+    /* === МАГИЯ ЖИДКОГО СТЕКЛА === */
+    /* Размывает бегущую строку позади панели на 20 пикселей */
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px); /* Для Safari */
+}
+
+/* === ЛОГОТИП === */
+.logo-text {
+    font-family: var(--font-special);
+    font-size: var(--logo-font-size);
+    color: var(--logo-color);
+    
+    /* Маржин вниз оставляем, это не часть формы */
+    margin: 0;
+    margin-bottom: var(--logo-margin-bot);
+    
+    letter-spacing: 2px;
+    line-height: 0.8; 
+    text-align: center;
+}
+
+/* === ТАБЫ === */
+.auth-tabs {
+    display: flex; width: 100%;
+    margin-bottom: var(--tab-margin-bot);
+    background: var(--input-bg-color);
+    border-radius: var(--input-radius);
+    padding: 5px; /* Допустимое исключение */
+    box-sizing: border-box;
+}
+.tab {
+    flex: 1; text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    border-radius: 8px; /* Допустимое исключение */
+    color: #666;
+    font-weight: 600; font-size: var(--tab-font-size);
+    transition: 0.2s;
+}
+.tab.active {
+    background-color: #333;
+    color: #fff;
+}
+
+
+/* === ФОРМА (СИСТЕМА GAP ВМЕСТО MARGIN) === */
+.auth-form { 
+    width: 100%; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    
+    /* Ключ к стабильности: */
+    gap: var(--layout-gap); 
+}
+
+/* ОБНУЛЯЕМ ЛИШНИЕ ОТСТУПЫ У ЭЛЕМЕНТОВ ФОРМЫ */
+.input-box, .auth-btn, .forgot-pass {
+    margin: 0; 
+}
+
+
+/* === ИНПУТЫ === */
+.input-box {
+    position: relative;
+    width: 100%;
+    /* Margin удален */
+}
+.input-box .icon {
+    position: absolute;
+    left: 15px; top: 50%; transform: translateY(-50%);
+    color: #666; width: 20px; height: 20px; /* Кратные 10/5 - ок */
+}
+.input-box .icon svg { width: 100%; height: 100%; }
+
+.auth-input {
+    width: 100%; 
+    height: var(--input-height);
+    background-color: var(--input-bg-color);
+    border: 1px solid #333; 
+    border-radius: var(--input-radius);
+    
+    padding-left: var(--input-icon-gap); 
+    padding-right: 15px;
+    
+    color: #fff; 
+    font-size: var(--input-font-size);
+    box-sizing: border-box; outline: none; transition: 0.2s;
+    font-family: var(--font-ui);
+    margin: 0;
+}
+.auth-input:focus { border-color: var(--btn-bg-color); }
+.auth-input::placeholder { color: #555; }
+
+
+/* === КНОПКА ВХОДА (LOG IN) === */
+.auth-btn {
+    width: 100%; 
+    height: var(--btn-height);
+    background-color: var(--btn-bg-color);
+    color: var(--btn-text-color);
+    border: none; border-radius: var(--btn-radius);
+    
+    font-family: var(--font-special); 
+    
+    /* Используем КРУПНЫЙ шрифт */
+    font-size: var(--btn-login-fs);
+    
+    letter-spacing: 0.5px;
+    
+    /* Margin удален, используем gap + немного сверху если надо */
+    cursor: pointer; 
+    margin-top: 15px; /* Чуть отодвинули от инпутов, но через GAP было бы чище. Оставил так для красоты */
+
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 2px; transition: 0.2s;
+}
+.auth-btn:hover { opacity: 0.8; }
+
+
+/* === КНОПКА РЕГИСТРАЦИИ (CREATE ACCOUNT) === */
+.auth-btn.outline {
+    background: transparent; 
+    border: 2px solid var(--btn-bg-color); 
+    color: var(--btn-bg-color); 
+    
+    /* Используем МЕЛКИЙ шрифт */
+    font-size: var(--btn-signup-fs);
+    /* box-sizing чтобы рамка не ломала размер */
+    box-sizing: border-box; 
+}
+.auth-btn.outline:hover { 
+    background: #222; 
+}
+
+/* === МЕЛКИЙ ТЕКСТ === */
+.forgot-pass {
+    font-size: var(--forgot-font-size); 
+    color: var(--forgot-color); 
+    
+    /* Margin убран, работает gap */
+    cursor: pointer; text-align: center; width: 100%;
+}
+.forgot-pass:hover { color: #fff; text-decoration: underline; }
+
+
+/* СООБЩЕНИЯ */
+.status-msg {
+    margin-top: 15px; 
+    margin-bottom: 0; 
+    
+    font-size: 10px; color: #fff;
+    text-align: center; 
+    min-height: 20px; 
+}
+
+/* === 3. АНИМИРОВАННЫЙ ФОН (V3: Оптимизация + Бесшовная петля) === */
+.bg-animation-wrapper {
+    position: fixed;
+    z-index: -1; 
+    
+    /* УМЕНЬШИЛ: Было 400% -> Стало 200%. Лагов будет в 4 раза меньше. */
+    /* Этого достаточно, чтобы закрыть углы при повороте 30 град. */
+    width: 200%; 
+    height: 200%;
+    
+    /* Центруем фон, чтобы при вращении он не улетал */
+    left: -50%; 
+    top: -50%;
+    
+    /* GPU Режим */
+    transform: rotate(-30deg) translateZ(0); 
+    will-change: transform;
+    pointer-events: none;
+    
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 0; /* Строки плотно друг к другу */
+}
+
+.scrolling-text {
+    font-family: 'Onder', sans-serif; 
+    font-size: 80px; 
+    font-weight: 900;
+    line-height: 0.85; 
+    
+    /* ВАЖНО: Текст не переносится */
+    white-space: nowrap; 
+    
+    color: transparent; 
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08); 
+    
+    backface-visibility: hidden; 
+    /* Используем relative, чтобы анимация сдвига работала от ширины элемента */
+    position: relative;
+    
+    /* ЗАПУСК ПЕТЛИ */
+    animation: seamlessLoop 60s linear infinite; 
+}
+
+/* Четные строки - едут в другую сторону (но тоже бесшовно) */
+.scrolling-text:nth-child(even) {
+    opacity: 0.5;
+    animation-duration: 70s;
+    animation-direction: reverse; 
+}
+
+/* === МАТЕМАТИКА БЕСШОВНОСТИ === */
+/* Мы сдвигаем строку ровно на 50% влево. */
+/* В HTML мы должны продублировать текст так, чтобы левая половина была копией правой. */
+/* Когда левая половина уезжает за экран, правая встает ровно на ее место -> происходит мгновенный сброс в 0%, который глазу не виден. */
+@keyframes seamlessLoop {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); } 
+}
+
+/* Эффект: Четные строки чуть прозрачнее и едут в другую сторону */
+.scrolling-text:nth-child(even) {
+    opacity: 0.5;
+    animation-duration: 40s;
+    animation-direction: reverse; 
+}
+
+@keyframes marqueeMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-20%); } 
+}
+
+/* === ГЛАЗИК ПАРОЛЯ === */
+.toggle-password {
+    position: absolute;
+    right: 15px; 
+    top: 50%; 
+    transform: translateY(-50%);
+    
+    color: #666; 
+    cursor: pointer;
+    width: 20px; 
+    height: 20px;
+    
+    z-index: 10; /* Поверх инпута */
+    transition: 0.2s;
+}
+
+.toggle-password:hover {
+    color: #fff; /* При наведении белеет */
+}
+
+.toggle-password.viewing {
+    color: var(--accent-blue, #ffffff); /* Или любой яркий цвет, когда пароль ВИДЕН */
+}

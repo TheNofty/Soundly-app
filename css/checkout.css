@@ -1,0 +1,40 @@
+/* === ЭКРАН ОПЛАТЫ (БЕЛАЯ СТРАНИЦА) === */
+
+#page-checkout {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    
+    background-color: #FFFFFF; /* БЕЛЫЙ ФОН */
+    z-index: 10000; /* Перекрывает всё, даже модалки */
+    
+    display: none; /* Скрыто по умолчанию */
+    flex-direction: column;
+}
+
+/* Фейковый контейнер шапки, чтобы выставить лого по сетке */
+.checkout-header-dummy {
+    width: 100%;
+    height: var(--header-h); /* Берет 60px из конфига */
+    display: flex;
+    align-items: center;
+    /* У нас в settings паддингов нет, но если будут - подхватятся */
+}
+
+/* Перекрашиваем ТОЛЬКО внутри этого экрана */
+#page-checkout .app-name {
+    color: #000000 !important; /* Текст черный */
+}
+
+#page-checkout .app-logo {
+    /* Хитрость CSS: делает картинку полностью черной (силуэт) */
+    filter: brightness(0); 
+}
+
+/* Принудительно показываем лого зону, даже если там стили скрыты */
+#page-checkout .header-logo-area {
+    pointer-events: none; /* Тут кликать уже не надо */
+    border: none; /* Линии убираем */
+}

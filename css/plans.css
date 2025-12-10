@@ -1,0 +1,291 @@
+/* === НАСТРОЙКИ СТРАНИЦЫ ТАРИФОВ (ТВОИ НОВЫЕ РАЗМЕРЫ) === */
+
+:root {
+    /* [ 1. РАЗМЕРЫ ] */
+    --p-width:          400px;     /* Твои 400px */
+    --p-height:         600px;     /* Твои 600px */
+    --p-radius:         30px;      
+    --p-border:         5px;       
+
+    /* [ 2. ОТСТУПЫ ] */
+    --p-gap:            20px;      
+    --p-top-pad:        50px;      
+    --p-inner-pad:      30px 20px; 
+
+    /* [ 3. ТЕКСТ ] */
+    --p-fs-title:       40px;      /* Твои 40px */
+    --p-fs-price:       30px;      /* Твои 30px */
+    --p-fs-desc:        15px;      /* Твои 15px */
+    --p-fs-feat:        15px;      
+
+    /* [ 4. ЦВЕТА ] */
+    --p-color-accent:   #0055FF;   
+    --p-color-border:   #252525;   
+    --p-color-gray:     #555555;   
+}
+
+
+/* === ОСНОВНОЙ КОД (НИЖЕ) === */
+
+/* Главный контейнер */
+.plans-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: var(--ads-left-margin);
+    padding-top: var(--p-top-pad); 
+}
+
+/* Тексты страницы */
+.plans-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+}
+
+.plans-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-grey); 
+    max-width: 600px;
+    margin-bottom: 50px;
+}
+
+/* Сетка для карточек */
+.plans-wrapper {
+    display: flex;
+    gap: var(--p-gap);
+    flex-wrap: wrap;
+    padding-bottom: 50px;
+    /* !!! ВОТ ЭТО ДЕЛАЕТ ЦЕНТРОВКУ ПО ГОРИЗОНТАЛИ !!! */
+    justify-content: center; 
+    /* Но учти: из-за отступа слева у .plans-container (для заголовка), 
+       карточки могут быть чуть смещены вправо. 
+       Если это критично, напиши — уберем паддинг только у сетки. */
+}
+
+/* Карточка */
+.plan-card {
+    width: var(--p-width);
+    height: var(--p-height);    
+    border-radius: var(--p-radius);
+    border: var(--p-border) solid var(--p-color-border);
+    padding: var(--p-inner-pad);
+    
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background: transparent;
+    cursor: default;
+}
+
+.plan-card.pro {
+    border-color: var(--p-color-accent); 
+}
+
+/* Шапка карточки */
+.plan-header {
+    margin-bottom: 20px;
+}
+
+.plan-name { 
+    font-size: var(--p-fs-title);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 5px; 
+}
+
+.plan-desc { 
+    font-size: var(--p-fs-desc);
+    color: var(--text-grey); 
+    margin-bottom: 15px; 
+}
+
+.plan-price { 
+    font-size: var(--p-fs-price);
+    font-weight: 800;
+    color: #fff; 
+}
+
+.plan-period { 
+    font-size: 12px;
+    color: var(--text-grey);
+    font-weight: 400; 
+}
+
+/* Список возможностей */
+.plan-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+.feature-row {
+    font-size: var(--p-fs-feat);
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px; 
+    background-color: var(--p-color-gray);
+    border-radius: 50%;
+}
+.plan-card.pro .dot {
+    background-color: var(--p-color-accent);
+}
+
+/* Кнопки */
+.plan-actions { 
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+    margin-top: auto; 
+}
+
+.btn-try {
+    width: 100%;
+    padding: 12px;
+    border-radius: 99px;
+    background: #333;
+    color: #fff; 
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-try:hover {
+    background: #444;
+}
+
+.plan-card.pro .btn-try { 
+    background-color: var(--p-color-accent); 
+}
+.plan-card.pro .btn-try:hover {
+    opacity: 0.8;
+}
+
+.btn-skip {
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    color: #666;
+    transition: 0.2s;
+}
+.btn-skip:hover {
+    color: #fff;
+}
+
+/* Мобильный фикс для карточек */
+@media (max-width: 600px) {
+    .plan-card {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ============================================================== */
+/* ================== 🔳 МОДАЛЬНОЕ ОКНО (POPUP) 🔳 ============= */
+/* ============================================================== */
+
+/* КОНФИГ ОКНА */
+:root {
+    --modal-overlay-bg:  rgba(0, 0, 0, 0.5); /* 50% затемнение */
+    --modal-w:           00px;
+    --modal-h:           400px;
+    --modal-bg:          #181818; /* Цвет фона окна */
+    
+    --modal-radius:      20px;
+    
+    /* Отступы внутри окна */
+    --modal-pad-gen:     5px;     /* Общий отступ от края (padding) */
+    
+    /* Шрифты (Размеры из ТЗ) */
+    --modal-fs-title:    15px;    
+    --modal-fs-sub:      10px;
+}
+
+/* ЗАДНИЙ ФОН (Затемнение) */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--modal-overlay-bg);
+    z-index: 5000; /* Поверх всего */
+    display: none; /* Скрыто по умолчанию */
+    align-items: center; justify-content: center;
+}
+
+/* САМО ОКНО */
+.payment-modal {
+    width: var(--modal-w); height: var(--modal-h);
+    background-color: var(--modal-bg);
+    border-radius: var(--modal-radius);
+    padding: var(--modal-pad-gen);
+    
+    display: flex; flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid #333; /* Тонкая рамка */
+}
+
+/* ТЕКСТЫ */
+.modal-title {
+    font-size: var(--modal-fs-title); font-weight: 800; color: #fff;
+    margin-top: 5px; margin-left: 5px; /* ТЗ: 5px */
+}
+
+.modal-subtitle {
+    font-size: var(--modal-fs-sub); font-weight: 400; color: #aaa;
+    margin-top: 10px; margin-left: 5px; /* ТЗ: 10px */
+    margin-bottom: 20px;
+}
+
+/* БЛОК С КНОПКАМИ ОПЛАТЫ */
+.payment-methods-row {
+    display: flex; 
+    gap: 10px; /* Отступ между кнопками */
+    margin-left: 5px; margin-right: 5px; /* Отступы по краям */
+    margin-bottom: 20px;
+}
+
+.pay-option-card {
+    flex: 1; /* Растянуть равномерно */
+    height: 60px; /* Размер 60 (оканчивается на 0) */
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: #222;
+    cursor: pointer;
+    
+    /* Центрируем контент */
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #fff; font-weight: 600;
+}
+.pay-option-card:hover { border-color: #fff; }
+.pay-option-card.active { border-color: #0055FF; background: #0b0b0b; }
+
+/* ДНО ОКНА (Кнопки действий) */
+.modal-footer {
+    margin-top: auto; /* Прижать к низу */
+    display: flex; justify-content: space-between;
+    padding: 0 5px 10px 5px;
+}
+
+.btn-modal {
+    border: none; background: transparent; 
+    color: #888; font-size: 12px; cursor: pointer; padding: 10px;
+}
+.btn-modal.primary { color: #fff; font-weight: 700; }
+.btn-modal:hover { color: #fff; }
+
+.close-cross {
+    position: absolute; top: 10px; right: 10px;
+    color: #888; cursor: pointer; font-size: 14px;
+}

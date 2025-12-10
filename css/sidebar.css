@@ -29,8 +29,17 @@
 .nav-item.active { background: var(--active-btn); color: #fff; font-weight: 600; }
 
 .badge-new {
-    background: var(--accent-blue); color: #fff; font-size: 9px;
-    padding: 2px 5px; border-radius: 3px; margin-left: 8px; font-weight: 700;
+    /* Фон берется из переменной (Белый) */
+    background: var(--accent-blue); 
+    
+    /* ТЕКСТ ДЕЛАЕМ ЧЕРНЫМ */
+    color: #000000; 
+    
+    font-size: 9px;
+    padding: 2px 5px; 
+    border-radius: 3px; 
+    margin-left: 8px; 
+    font-weight: 700;
 }
 .main-nav .nav-item { font-size: 14px; }
 .nav-icon { width: 14px; height: 14px; margin-right: 10px; opacity: 0.6; }
