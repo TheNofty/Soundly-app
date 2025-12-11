@@ -2,22 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1000"> <!-- Фиксированный размер для всех устройств -->
+    <meta name="viewport" content="width=1000">
     <title>Soundly App</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- СТИЛИ -->
-    <!-- ПРОБУЕМ С БОЛЬШОЙ БУКВЫ CSS/ -->
-    <link rel="stylesheet" href="CSS/settings.css">
-    <link rel="stylesheet" href="CSS/layout.css">
-    <link rel="stylesheet" href="CSS/sidebar.css">
-    <link rel="stylesheet" href="CSS/content.css">
-    <link rel="stylesheet" href="CSS/player.css">
-    <link rel="stylesheet" href="CSS/checkout.css">
-    <link rel="stylesheet" href="CSS/plans.css">
-    <!-- Стиль авторизации (если он в корне, путь не нужен) -->
+    <!-- !!! ЛЕКАРСТВО ОТ БЕЛОГО ЭКРАНА: Жесткий черный фон сразу !!! -->
+    <style> html, body { background-color: #121212 !important; color: white; } </style>
+
+    <!-- ПУТИ К СТИЛЯМ (НА GITHUB ОБЫЧНО ПАПКИ МАЛЕНЬКИМИ БУКВАМИ) -->
+    <!-- Проверь в репозитории: папка называется css или CSS? Тут стоит css/ -->
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/content.css">
+    <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/checkout.css">
+    <link rel="stylesheet" href="css/plans.css">
+    
+    <!-- Авторизация (Если файл лежит рядом с index.html) -->
     <link rel="stylesheet" href="auth_style.css">
+
+    <!-- FIREBASE СКРИПТЫ -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
