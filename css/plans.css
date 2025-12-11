@@ -19,7 +19,7 @@
     --p-fs-feat:        15px;      
 
     /* [ 4. ЦВЕТА ] */
-    --p-color-accent:   #0055FF;   
+    --p-color-accent:   #ffffff;   
     --p-color-border:   #252525;   
     --p-color-gray:     #555555;   
 }
@@ -269,7 +269,7 @@
     font-size: 10px; color: #fff; font-weight: 600;
 }
 .pay-option-card:hover { border-color: #fff; }
-.pay-option-card.active { border-color: #0055FF; background: #0b0b0b; }
+.pay-option-card.active { border-color: #ffffff; background: #0b0b0b; }
 
 /* ДНО ОКНА (Кнопки действий) */
 .modal-footer {
