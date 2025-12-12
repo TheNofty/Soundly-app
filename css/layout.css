@@ -204,3 +204,9 @@ body {
     pointer-events: none; /* Запрещает нажимать (физически отключает клик) */
     cursor: default;      /* Курсор становится обычной стрелкой */
 }
+
+/* БЛОКИРОВКА КНОПКИ ГЛАВНОЙ */
+.logo-click-zone.locked {
+    pointer-events: none !important; /* Запрещает нажимать */
+    cursor: default !important;      /* Убирает руку, ставит стрелку */
+}

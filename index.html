@@ -35,7 +35,7 @@
         
         <div class="header-logo-area">
             <!-- КНОПКА (нажимается только тут) -->
-            <div id="home-logo" class="logo-click-zone" onclick="openPage(null, 'page-home')">
+            <div id="header-logo-btn" class="logo-click-zone" onclick="openPage(null, 'page-home')">
                 <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="Soundly" onerror="this.style.display='none'">
                 <span class="app-name">SOUNDLY</span>
             </div>
@@ -279,16 +279,14 @@
             <div style="margin-bottom: 20px; font-weight: 700; font-size: 20px; color: #fff;">Choose Avatar</div>
             
             <div class="avatars-grid">
-                <!-- ПУТИ (ПРОВЕРЕНО ПО ТВОЕЙ ИЕРАРХИИ) -->
-                <img src="Interface/Icons/Profile/Avatar1.png" class="ava-option" onclick="changeMyAvatar(1)" alt="1">
-                <img src="Interface/Icons/Profile/Avatar2.png" class="ava-option" onclick="changeMyAvatar(2)" alt="2">
-                <img src="Interface/Icons/Profile/Avatar3.png" class="ava-option" onclick="changeMyAvatar(3)" alt="3">
-                <img src="Interface/Icons/Profile/Avatar4.png" class="ava-option" onclick="changeMyAvatar(4)" alt="4">
-                <img src="Interface/Icons/Profile/Avatar5.png" class="ava-option" onclick="changeMyAvatar(5)" alt="5">
-                <img src="Interface/Icons/Profile/Avatar6.png" class="ava-option" onclick="changeMyAvatar(6)" alt="6">
+                <!-- ДОБАВИЛ ПАПКУ /Avatar/ ВО ВСЕ ПУТИ -->
+                <img src="Interface/Icons/Profile/Avatar/Avatar1.png" class="ava-option" onclick="changeMyAvatar(1)">
+                <img src="Interface/Icons/Profile/Avatar/Avatar2.png" class="ava-option" onclick="changeMyAvatar(2)">
+                <img src="Interface/Icons/Profile/Avatar/Avatar3.png" class="ava-option" onclick="changeMyAvatar(3)">
+                <img src="Interface/Icons/Profile/Avatar/Avatar4.png" class="ava-option" onclick="changeMyAvatar(4)">
+                <img src="Interface/Icons/Profile/Avatar/Avatar5.png" class="ava-option" onclick="changeMyAvatar(5)">
+                <img src="Interface/Icons/Profile/Avatar/Avatar6.png" class="ava-option" onclick="changeMyAvatar(6)">
             </div>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>

@@ -19,9 +19,12 @@ const db = firebase.firestore();
 // ПУТЬ К КАРТИНКАМ
 const AVATAR_PATH_FIX = "Interface/Icons/Profile/Avatar/Avatar"; 
 
-// === ФУНКЦИЯ УСТАНОВКИ КАРТИНКИ (Чтобы не дублировать код) ===
+// === ФУНКЦИЯ УСТАНОВКИ КАРТИНКИ (СТАБИЛЬНАЯ) ===
 function setAvatarOnPage(id) {
     if (!id) return;
+    
+    // УБРАЛИ ?v=... чтобы браузер нормально кэшировал картинки
+    // Теперь они не будут мерцать и пропадать "рандомно"
     const finalSrc = `${AVATAR_PATH_FIX}${id}.png`;
     
     // Меняем в шапке
@@ -202,6 +205,16 @@ function openPage(btnElement, pageId) {
         }
     }
 
+    // === ЛОГИКА ЛОГОТИПА (Вставь это в конец openPage) ===
+    const logoBtn = document.getElementById('header-logo-btn');
+    if (logoBtn) {
+        if (pageId === 'page-home') {
+            logoBtn.classList.add('locked'); // Если мы на Home -> Блочим
+        } else {
+            logoBtn.classList.remove('locked'); // Иначе -> Разблочим
+        }
+    }
+
 } // <--- Это конец функции openPage
 
 
@@ -334,23 +347,28 @@ const avatarOverlay = document.getElementById('avatar-overlay');
 function openAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'flex'; }
 function closeAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'none'; }
 
+// === ОБНОВЛЕННАЯ ФУНКЦИЯ СМЕНЫ (С ПРИНУДИТЕЛЬНЫМ ОБНОВЛЕНИЕМ) ===
 function changeMyAvatar(id) {
     closeAvatarModal();
-    // Визуальное обновление (из твоей функции)
-    if(typeof updateAllAvatars === 'function') {
-        updateAllAvatars(id); 
-    } else {
-        // Резервный метод если функция называется иначе
-        const p = "Interface/Icons/Profile/Avatar" + id + ".png"; 
-        const hImg = document.getElementById('user-avatar');
-        const pImg = document.getElementById('profile-big-avatar');
-        if(hImg) hImg.src = p;
-        if(pImg) pImg.src = p;
-    }
+
+    // 1. Формируем путь + добавляем время, чтобы сбросить "битый" кэш
+    // Пример: .../Avatar3.png?time=12345678
+    const timeStamp = new Date().getTime(); 
+    const finalSrc = `${AVATAR_PATH_FIX}${id}.png?time=${timeStamp}`;
+
+    // 2. Ставим картинку принудительно
+    const hImg = document.getElementById('user-avatar');
+    if (hImg) hImg.src = finalSrc;
+
+    const pImg = document.getElementById('profile-big-avatar');
+    if (pImg) pImg.src = finalSrc;
     
-    // Сохранение в базу
-    const u = firebase.auth().currentUser;
+    // 3. Сохраняем ID в память браузера (чтобы при F5 работало)
+    localStorage.setItem('soundly_my_avatar_id', id);
+
+    // 4. Отправляем чистый ID в Базу
+    const u = auth.currentUser;
     if(u) {
-        firebase.firestore().collection("users").doc(u.uid).update({ avatar_id: id });
+        db.collection("users").doc(u.uid).update({ avatar_id: id });
     }
 }
