@@ -1,3 +1,5 @@
+let isManualTransition = false;
+
 // === 1. НОВЫЕ КЛЮЧИ (soundly-e318d) ===
 const firebaseConfig = {
   apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk",
@@ -22,6 +24,17 @@ const loginForm = document.getElementById('form-login');
 const registerForm = document.getElementById('form-register');
 const tabs = document.querySelectorAll('.tab');
 const statusText = document.getElementById('status-message');
+
+// === ФУНКЦИЯ АНИМАЦИИ ===
+function startAnimationAndGo() {
+    isManualTransition = true;
+    const loader = document.getElementById('simple-loader');
+    if (loader) loader.style.display = 'flex';
+    
+    setTimeout(() => {
+        window.location.href = "../index.html";
+    }, 2000);
+}
 
 // Переключение (Flex для сохранения размеров)
 function switchTab(type) {
@@ -108,13 +121,53 @@ function registerUser() {
 function loginUser() {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
-    if(!email || !pass) return showStatus("Enter data", "red");
+    if(!email || !pass) return showStatus("Enter data", "white");
     
-    showStatus("Logging in...", "yellow");
+    showStatus("Authorization...", "white");
+    
     auth.signInWithEmailAndPassword(email, pass).then(() => {
-        showStatus("Hello!", "#00ff00");
-        setTimeout(() => window.location.href = "../index.html", 1000);
-    }).catch(() => showStatus("Wrong Login/Pass", "red"));
+        showStatus("Success!", "white");
+        
+        // ЗАПУСК ЗАГРУЗКИ
+        startAnimationAndGo(); 
+        
+    }).catch(() => showStatus("Wrong Login/Pass", "white"));
+}
+
+function resetPassword() { alert("Coming soon"); }
+function showStatus(t, c) { if(statusText) { statusText.innerText = t; statusText.style.color = c; } }
+
+switchTab('login');
+
+// === ПОКАЗАТЬ / СКРЫТЬ ПАРОЛЬ ===
+function togglePass(inputId, iconElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    if (input.type === 'password') {
+        input.type = 'text'; // Показываем
+        iconElement.classList.add('viewing'); // Меняем цвет глазика
+    } else {
+        input.type = 'password'; // Скрываем
+        iconElement.classList.remove('viewing');
+    }
+}
+
+// ВХОД
+function loginUser() {
+    const email = document.getElementById('login-email').value;
+    const pass = document.getElementById('login-pass').value;
+    if(!email || !pass) return showStatus("Enter data", "white");
+    
+    showStatus("Authorization...", "white");
+    
+    auth.signInWithEmailAndPassword(email, pass).then(() => {
+        showStatus("Success!", "white");
+        
+        // ЗАПУСК ЗАГРУЗКИ
+        startAnimationAndGo(); 
+        
+    }).catch(() => showStatus("Wrong Login/Pass", "white"));
 }
 
 function resetPassword() { alert("Coming soon"); }

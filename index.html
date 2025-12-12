@@ -35,7 +35,7 @@
         
         <div class="header-logo-area">
             <!-- КНОПКА (нажимается только тут) -->
-            <div class="logo-click-zone" onclick="openPage(null, 'page-home')">
+            <div id="home-logo" class="logo-click-zone" onclick="openPage(null, 'page-home')">
                 <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="Soundly" onerror="this.style.display='none'">
                 <span class="app-name">SOUNDLY</span>
             </div>
@@ -174,9 +174,15 @@
             <!-- ПРОФИЛЬ -->
             <div id="page-profile" class="content-frame" style="display: none;">
                 <div class="profile-page-content">
+                <!-- Обертка с кликом -->
+                <div class="profile-ava-wrapper" onclick="openAvatarModal()">
                     <img id="profile-big-avatar" class="profile-pic-big" src="Interface/Icons/default_avatar.png" alt="Profile">
-                    <div id="profile-username" class="profile-username">@loading</div>
+                    <!-- Карандаш (SVG) -->
+                    <svg class="edit-pencil" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
                 </div>
+                <div id="profile-username" class="profile-username">@loading</div>
             </div>
 
             <!-- Другие -->
@@ -266,6 +272,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- МОДАЛКА ВЫБОРА АВАТАРА -->
+    <div id="avatar-overlay" class="modal-overlay" onclick="closeAvatarModal()">
+        <div class="avatar-modal" onclick="event.stopPropagation()">
+            <div style="margin-bottom: 20px; font-weight: 700; font-size: 20px; color: #fff;">Choose Avatar</div>
+            
+            <div class="avatars-grid">
+                <!-- ПУТИ (ПРОВЕРЕНО ПО ТВОЕЙ ИЕРАРХИИ) -->
+                <img src="Interface/Icons/Profile/Avatar1.png" class="ava-option" onclick="changeMyAvatar(1)" alt="1">
+                <img src="Interface/Icons/Profile/Avatar2.png" class="ava-option" onclick="changeMyAvatar(2)" alt="2">
+                <img src="Interface/Icons/Profile/Avatar3.png" class="ava-option" onclick="changeMyAvatar(3)" alt="3">
+                <img src="Interface/Icons/Profile/Avatar4.png" class="ava-option" onclick="changeMyAvatar(4)" alt="4">
+                <img src="Interface/Icons/Profile/Avatar5.png" class="ava-option" onclick="changeMyAvatar(5)" alt="5">
+                <img src="Interface/Icons/Profile/Avatar6.png" class="ava-option" onclick="changeMyAvatar(6)" alt="6">
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

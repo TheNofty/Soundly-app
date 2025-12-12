@@ -35,8 +35,14 @@
     padding-top: 3px; cursor: pointer; pointer-events: auto;
     transition: transform 0.1s ease, opacity 0.2s; white-space: nowrap; z-index: 5;
 }
-.telegram-card .ad-btn { background-color: var(--btn-bg-telegram); }
-.discord-card .ad-btn  { background-color: var(--btn-bg-discord); }
+.telegram-card .ad-btn { 
+    background-color: #FFFFFF; 
+    color: #000000; 
+}
+.discord-card .ad-btn { 
+    background-color: #FFFFFF; 
+    color: #000000;
+}
 .ad-btn:hover { opacity: 0.9; }
 .ad-btn:active { transform: translateX(-50%) scale(0.95); }
 
@@ -69,9 +75,22 @@
 .plans-title { font-family: var(--font-base); font-size: 32px; font-weight: 800; color: #FFFFFF; margin-bottom: 10px; }
 .plans-subtitle { font-family: var(--font-base); font-size: 14px; font-weight: 400; color: var(--text-grey); max-width: 600px; margin-bottom: 50px; }
 .plans-wrapper { display: flex; gap: var(--plans-gap); flex-wrap: wrap; padding-bottom: 100px; }
-.plan-card { width: var(--plan-card-width); height: var(--plan-card-height); border-radius: var(--plan-radius); border: var(--plan-border); background: #151515; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
+.plan-card { 
+    width: var(--plan-card-width);     /* Подключили конфиг */
+    height: var(--plan-card-height);   /* Подключили конфиг */
+    border-radius: var(--plan-radius); /* Подключили конфиг */
+    border: var(--plan-border); 
+    /* Остальное (background и padding) оставляем как есть */
+    background: #151515; 
+    padding: 25px; 
+    display: flex; flex-direction: column; box-sizing: border-box; 
+}
 /* Делаем рамку Белой */
-.plan-card.pro { border: 2px solid #FFFFFF; }
+/* Делаем рамку Белой, но ТОЛЩИНА КАК У ВСЕХ */
+.plan-card.pro { 
+    /* var(--p-border) = 5px, solid, var(--p-color-accent) = белый */
+    border: var(--p-border) solid var(--p-color-accent);
+}
 .plan-header { margin-bottom: 20px; }
 .plan-name { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 5px; }
 .plan-desc { font-size: 13px; color: var(--text-grey); margin-bottom: 15px; }
@@ -83,21 +102,109 @@
 /* Делаем точки Белыми */
 .plan-card.pro .dot { background-color: #FFFFFF; }
 .plan-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
-.btn-try { width: 100%; padding: 12px; border-radius: 99px; background: #333; color: #fff; font-family: var(--font-base); font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s; }
-.btn-try:hover { background: #444; }
-/* Делаем кнопку Белой, а текст Черным */
+/* КНОПКА В КАРТОЧКЕ */
+.btn-try {
+    width: 100%; padding: 12px; border-radius: 99px;
+    background: #333; color: #fff;
+    font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+    
+    /* Добавляем плавность */
+    transition: opacity 0.2s; 
+}
+
+/* ОБЫЧНАЯ КНОПКА (STARTER/ELITE) ПРИ НАВЕДЕНИИ */
+.btn-try:hover {
+    background: #333; /* Цвет НЕ меняем (чтобы не было серости) */
+    opacity: 0.7;     /* Меняем только прозрачность */
+}
+
+/* БЕЛАЯ КНОПКА (PRO) */
 .plan-card.pro .btn-try { 
     background-color: #FFFFFF; 
     color: #000000; 
 }
-.plan-card.pro .btn-try:hover { 
-    background-color: #e0e0e0; /* Чуть серый при наведении, чтобы видно было реакцию */
+
+/* БЕЛАЯ КНОПКА ПРИ НАВЕДЕНИИ */
+.plan-card.pro .btn-try:hover {
+    background-color: #FFFFFF; /* Жестко держим Белый */
+    opacity: 0.7;              /* Анимация через прозрачность */
 }
 
-/* --- ПРОФИЛЬ --- */
+/* --- ПРОФИЛЬ (С КАРАНДАШОМ И ВЫБОРОМ) --- */
 .profile-page-content { display: flex; flex-direction: column; align-items: center; padding-top: var(--profile-top-margin); width: 100%; }
-.profile-pic-big { width: var(--profile-ava-size); height: var(--profile-ava-size); border-radius: 50%; object-fit: cover; border: 2px solid #333; background-color: #222; margin-bottom: var(--profile-gap); }
+
+/* 1. Обертка (держит размер) */
+.profile-ava-wrapper {
+    position: relative; 
+    width: var(--profile-ava-size); height: var(--profile-ava-size);
+    margin-bottom: var(--profile-gap); cursor: pointer;
+}
+
+/* 2. Картинка (вписывается в обертку) */
+.profile-pic-big { 
+    width: 100%; height: 100%; /* ЗАНИМАЕТ 100% от РОДИТЕЛЯ */
+    border-radius: 50%; object-fit: cover; 
+    border: 2px solid #333; background-color: #222; 
+    display: block; transition: 0.2s;
+}
+
+/* 3. Карандаш */
+.edit-pencil {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 30px; height: 30px; opacity: 0; pointer-events: none; transition: 0.2s;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.8));
+}
+
+/* Наведение */
+.profile-ava-wrapper:hover .profile-pic-big { filter: brightness(0.6); }
+.profile-ava-wrapper:hover .edit-pencil { opacity: 1; }
+
 .profile-username { font-size: var(--profile-text-size); color: var(--text-white); font-weight: 600; }
+
+/* === МОДАЛКА ВЫБОРА АВАТАРА === */
+.avatar-modal {
+    width: 400px; /* Фиксированная ширина */
+    background-color: #121214;
+    border: 1px solid #333; border-radius: 20px;
+    padding: 20px; display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+}
+/* СЕТКА АВАТАРОК (GRID) */
+.avatars-grid {
+    display: grid; 
+    /* ПРИКАЗЫВАЮ: РОВНО 3 КОЛОНКИ ОДИНАКОВОЙ ШИРИНЫ */
+    grid-template-columns: repeat(3, 1fr); 
+    
+    /* Отступы между ячейками */
+    gap: 15px; 
+    
+    /* Центруем всю сетку */
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* КРУЖКИ */
+.ava-option {
+    /* Чтобы были по центру своей ячейки */
+    justify-self: center;
+    
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%; 
+    cursor: pointer;
+    background-color: #222;
+    border: 2px solid transparent;
+    transition: 0.2s;
+    object-fit: cover; /* Чтобы картинка не плющилась */
+}
+
+.ava-option:hover {
+    transform: scale(1.1);
+    border-color: #fff;
+}
+.ava-option:active { transform: scale(0.95); }
+.ava-option:hover { transform: scale(1.1); border-color: #fff; }
 
 /* === МОДАЛЬНОЕ ОКНО === */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 5000; display: none; align-items: center; justify-content: center; }
@@ -115,27 +222,72 @@
 .close-cross:hover { color: #fff; }
 
 .modal-header { margin-bottom: 20px; margin-top: 5px; }
-.modal-title { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 5px; }
-.modal-subtitle { font-size: 14px; color: #aaa; font-weight: 400;}
+/* УВЕЛИЧЕННЫЕ ЗАГОЛОВКИ */
+.modal-title { 
+    /* Тянет 50px из конфига */
+    font-size: var(--fs-modal-head); 
+    font-weight: 900; 
+    color: #fff; 
+    margin-bottom: 10px; 
+    line-height: 1; /* Чтобы не занимало пол экрана по высоте */
+}
+
+.modal-subtitle { 
+    /* Тянет 20px из конфига */
+    font-size: var(--fs-modal-sub); 
+    color: #aaa; 
+    font-weight: 400;
+}
 
 .payment-methods-row { display: flex; gap: 10px; margin-bottom: 25px; }
 
 /* ВЕРТИКАЛЬНАЯ КАРТОЧКА */
 .pay-option-card {
-    flex: 1; height: var(--card-pay-height);
-    background-color: #121212; border: 2px solid #333; border-radius: 10px; cursor: pointer;
+    flex: 1; 
+    /* Твоя высота 110px из конфига */
+    height: var(--card-pay-height); 
     
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: var(--card-gap-inner);
+    background-color: #121212; 
+    border: 2px solid #333; 
+    border-radius: 10px; 
+    cursor: pointer;
     
-    box-sizing: border-box; transition: 0.1s ease; user-select: none;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; /* Строго по центру */
+    
+    /* УБИРАЕМ лишние отступы, чтобы текст не выпадал */
+    padding: 0 5px; 
+    gap: 2px; /* Чуть уменьшил разрыв между цифрами */
+    
+    box-sizing: border-box; 
+    transition: 0.1s ease; 
+    user-select: none;
+}
+
+/* Также добавь это для всех текстов внутри, чтобы строки не были гигантскими */
+.pay-option-card div {
+    line-height: 1.2;
 }
 .pay-option-card:hover { border-color: #fff; }
-.pay-option-card.active { border-color: var(--accent-blue); background-color: #15151b; }
+.pay-option-card.active { 
+    border-color: #FFFFFF; 
+    background-color: #15151b; 
+}
 
-.pay-price { font-size: var(--fs-pay-price); font-weight: 800; color: #fff; line-height: 1; }
-.pay-period { font-size: var(--fs-pay-period); font-weight: 500; color: #fff; }
-.pay-subtext { font-size: var(--fs-pay-subtext); font-weight: 600; }
+.pay-price { 
+    font-size: var(--fs-pay-price);      /* Меняй в settings */
+    font-weight: 800; color: #fff; line-height: 1; 
+}
+.pay-period { 
+    font-size: var(--fs-pay-period);     /* Меняй в settings */
+    font-weight: 500; color: #fff; 
+}
+.pay-subtext { 
+    font-size: var(--fs-pay-subtext);    /* Меняй в settings */
+    font-weight: 600; 
+}
 .pay-subtext.yellow { color: var(--text-try-yellow); }
 .pay-subtext.blue { color: var(--text-save-blue); }
 
@@ -161,32 +313,57 @@
 }
 
 /* === [ 2 ] КНОПКА ОПЛАТИТЬ === */
-.btn-modal.pay { 
-    background-color: var(--btn-pay-bg-color); /* Белый фон */
+/* === БАЗОВЫЕ НАСТРОЙКИ (КОПИЯ ПОВЕДЕНИЯ .ad-btn) === */
+/* ================================================= */
+/* === [ 9. НОВЫЕ КНОПКИ (1-в-1 КАК OPEN TELEGRAM) ] === */
+/* ================================================= */
+
+/* Общая база (Скорость как у баннера) */
+.btn-modal { 
+    flex: 1; 
+    padding: 0; 
+    border-radius: 50px; 
+    border: none;
+    cursor: pointer; 
+    font-weight: 700; font-size: 13px; 
     
-    /* ВАЖНО: Добавил переменную для цвета текста, чтобы было видно на белом */
-    color: var(--btn-pay-text-color);         
-    
-    border: 0px solid #fff; 
+    /* То же самое, что и у .ad-btn */
+    transition: opacity 0.2s; 
 }
 
-.btn-modal.pay:hover { 
-    opacity: 0.9; 
-    border-color: #e0e0e0;
-}
-
-/* === [ 3 ] КНОПКА ОТМЕНА === */
+/* === [ КНОПКА ОТМЕНА (ТЕМНАЯ) ] === */
 .btn-modal.cancel { 
-    background-color: #333333; /* Темно-серый фон */
-    color: #FFFFFF; 
-    
-    /* ВОТ ТУТ МЕНЯЙ РАМКУ, ОНА ТЕПЕРЬ СРАБОТАЕТ */
-    border: 0px solid #444; 
+    background-color: #333333 !important; 
+    color: #FFFFFF !important; 
+    opacity: 1;
 }
 
+/* При наведении просто теряем 10% непрозрачности, цвет стоит */
 .btn-modal.cancel:hover { 
-    background-color: #444444; 
-    border-color: #666;
+    opacity: 0.9 !important; 
+}
+/* Нажатие */
+.btn-modal.cancel:active { transform: scale(0.95); }
+
+
+/* === КНОПКА ОПЛАТИТЬ (БЕЛАЯ) === */
+.btn-modal.pay { 
+    background-color: #FFFFFF !important; 
+    color: #000000 !important;           
+    opacity: 1;
+}
+
+/* === АНИМАЦИЯ ОПЛАТЫ (ТОЧНАЯ КОПИЯ) === */
+.btn-modal.pay:hover { 
+    /* Держим белый фон намертво */
+    background-color: #FFFFFF !important; 
+    
+    /* Та же прозрачность, что и у кнопки Telegram */
+    opacity: 0.9 !important;              
+}
+
+.btn-modal.pay:active {
+    transform: scale(0.95);
 }
 
 /* ================================================= */
@@ -211,4 +388,13 @@
 #page-checkout .app-logo {
     filter: invert(1);
     /* Если лого изначально цветное, а не белое - используй: brightness(0); */
+}
+
+/* Анимация кнопки Оплатить */
+.btn-modal.pay:hover { 
+    /* Запрещаем становиться серой */
+    background-color: var(--btn-pay-bg-color) !important; 
+    
+    /* Включаем прозрачность как у Телеграма */
+    opacity: 0.7 !important; 
 }

@@ -29,10 +29,9 @@
 .nav-item.active { background: var(--active-btn); color: #fff; font-weight: 600; }
 
 .badge-new {
-    /* Фон берется из переменной (Белый) */
-    background: var(--accent-blue); 
+    /* ТЕПЕРЬ ФОН ЖЕСТКО БЕЛЫЙ */
+    background: #FFFFFF; 
     
-    /* ТЕКСТ ДЕЛАЕМ ЧЕРНЫМ */
     color: #000000; 
     
     font-size: 9px;

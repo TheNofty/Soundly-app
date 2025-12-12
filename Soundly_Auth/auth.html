@@ -107,9 +107,16 @@
             
             <!-- РАСПОРКА ДЛЯ ВЫРАВНИВАНИЯ ВЫСОТЫ -->
             <div class="forgot-pass" style="opacity: 0; pointer-events: none;">Placeholder</div>
-        </div>
 
-        <p class="status-msg" id="status-message"></p>
+            <!-- ТЕКСТ ОШИБКИ ТЕПЕРЬ ТУТ (ВНИЗУ РАМКИ) -->
+            <p class="status-msg" id="status-message"></p>
+    </div>
+
+    <!-- 2. ЭКРАН ЗАГРУЗКИ -->
+    <div id="simple-loader" class="loader-overlay" style="display: none;">
+        <!-- ТЕПЕРЬ ПРОСТО ИМЯ ФАЙЛА, ОНИ ЛЕЖАТ В ОДНОЙ ПАПКЕ -->
+        <!-- ../ означает "вытий из папки Soundly_Auth назад" -->
+<img src="../Interface/Icons/Top_ui/Logo.png" class="loader-img" alt="Loading">
     </div>
 
     <!-- FIREBASE -->

@@ -188,7 +188,21 @@ function openPage(btnElement, pageId) {
             player.style.display = 'flex';
         }
     }
-}
+
+    // === 5. БЛОКИРОВКА ЛОГОТИПА ===
+    const logoDiv = document.getElementById('home-logo');
+    
+    if (logoDiv) {
+        if (pageId === 'page-home') {
+            // Если мы на главной — вешаем замок
+            logoDiv.classList.add('locked');
+        } else {
+            // Если ушли с главной — снимаем замок
+            logoDiv.classList.remove('locked');
+        }
+    }
+
+} // <--- Это конец функции openPage
 
 
 // === 4. КАЛЬКУЛЯТОР МОДАЛЬНОГО ОКНА ===
@@ -313,3 +327,30 @@ initLogoButtons();
 
 // === АВТОСТАРТ (Загружаем Главную и убираем выделение кнопок) ===
 openPage(null, 'page-home');
+
+// === ЛОГИКА АВАТАРОК ===
+const avatarOverlay = document.getElementById('avatar-overlay');
+
+function openAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'flex'; }
+function closeAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'none'; }
+
+function changeMyAvatar(id) {
+    closeAvatarModal();
+    // Визуальное обновление (из твоей функции)
+    if(typeof updateAllAvatars === 'function') {
+        updateAllAvatars(id); 
+    } else {
+        // Резервный метод если функция называется иначе
+        const p = "Interface/Icons/Profile/Avatar" + id + ".png"; 
+        const hImg = document.getElementById('user-avatar');
+        const pImg = document.getElementById('profile-big-avatar');
+        if(hImg) hImg.src = p;
+        if(pImg) pImg.src = p;
+    }
+    
+    // Сохранение в базу
+    const u = firebase.auth().currentUser;
+    if(u) {
+        firebase.firestore().collection("users").doc(u.uid).update({ avatar_id: id });
+    }
+}
