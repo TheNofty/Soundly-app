@@ -7,11 +7,21 @@
     width: 100%; 
     height: 100%;
     
-    background-color: #FFFFFF; /* БЕЛЫЙ ФОН */
-    z-index: 10000; /* Перекрывает всё, даже модалки */
+    background-color: #FFFFFF; 
+    z-index: 10000;
     
-    display: none; /* Скрыто по умолчанию */
+    display: none; 
     flex-direction: column;
+    overflow-y: auto; /* ВАЖНО: Разрешает прокрутку */
+}
+
+/* ✅ ДОБАВИЛИ КРЕСТИК ЗАКРЫТИЯ (Его раньше не было) */
+.checkout-close {
+    font-size: 30px; 
+    color: #000; 
+    cursor: pointer; 
+    line-height: 0.8; 
+    font-weight: 300;
 }
 
 /* Фейковый контейнер шапки, чтобы выставить лого по сетке */
@@ -37,4 +47,166 @@
 #page-checkout .header-logo-area {
     pointer-events: none; /* Тут кликать уже не надо */
     border: none; /* Линии убираем */
+}
+
+/* === СЕТКА (ДВЕ КОЛОНКИ) === */
+.checkout-body {
+    flex-grow: 1; 
+    width: 100%; 
+    max-width: 1000px;
+    margin: 0 auto; 
+    padding: var(--chk-pad-page);
+    
+    display: flex; 
+    justify-content: center; 
+    align-items: flex-start;
+    gap: var(--chk-gap-col);
+    
+    box-sizing: border-box;
+}
+
+/* --- ЛЕВАЯ КОЛОНКА (ТЕКСТ) --- */
+.col-left {
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-start;
+    padding-top: 10px;
+}
+/* Label (TOTAL TO PAY) - стал тоньше */
+.checkout-label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+
+/* PRO (Оставили жирным 900) */
+.checkout-plan-name { font-size: 50px; font-weight: 900; color: #000; margin: 0; line-height: 1; margin-bottom: 5px; }
+
+.checkout-divider { 
+    width: 60px; height: 5px; background: #000; 
+    margin-top: 30px; margin-bottom: 30px; 
+}
+
+/* Цена (Была 900, стала 700) */
+.checkout-sum { font-size: var(--chk-font-sum); font-weight: 700; color: #000; line-height: 1; letter-spacing: -2px; }
+.checkout-period { font-size: 18px; color: #666; font-weight: 500; margin-top: 5px; }
+.secure-badge { margin-top: 50px; color: #aaa; font-size: 11px; display: flex; align-items: center; }
+
+/* --- ПРАВАЯ КОЛОНКА (T-BANK WIDGET) --- */
+.col-right {
+    flex: 0 0 340px; /* Фиксируем ширину виджета */
+}
+
+.t-pay-card {
+    background-color: var(--tpay-bg); /* Серый фон F2F2F2 */
+    border-radius: var(--tpay-radius);
+    padding: 30px;
+    display: flex; flex-direction: column; align-items: center;
+}
+
+.t-logo-row { display: flex; align-items: center; margin-bottom: 25px; }
+
+.t-qr-container {
+    width: var(--qr-size); height: var(--qr-size);
+    background: #fff;
+    padding: 10px; box-sizing: border-box;
+    border-radius: 10px; margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.t-instruction { font-size: 12px; color: #666; margin-bottom: 25px; font-weight: 600; }
+
+.t-pay-btn {
+    width: 100%; height: 50px;
+    background-color: #F8DD1E; /* Фирменный Желтый Т-Банк */
+    color: #000; /* Черный текст */
+    
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; text-decoration: none;
+    font-size: 14px; font-weight: 700;
+    transition: 0.2s; cursor: pointer;
+}
+.t-pay-btn:hover { opacity: 0.8; }
+
+/* МОБИЛКА: Складываем колонки друг под друга */
+@media (max-width: 850px) {
+    .checkout-body { flex-direction: column; align-items: center; text-align: center; }
+    .col-left { align-items: center; padding-top: 0; margin-bottom: 40px; width: 100%; }
+    .checkout-divider { width: 100%; height: 1px; background: #eee; }
+    .col-right { width: 100%; max-width: 400px; }
+    .t-qr-container { display: none; } /* На телефоне QR прячем, там кнопка */
+    .t-instruction { display: none; }
+}
+
+/* =========================================
+   === ИНСТРУКЦИЯ ПО ОПЛАТЕ (СПИСОК) ===
+   ========================================= */
+
+.checkout-steps {
+    margin-top: 40px; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 5px; 
+}
+
+.step-row {
+    display: flex;
+    align-items: flex-start; 
+    gap: 15px;
+}
+
+.step-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #000000;
+    border-radius: 50%;
+    margin-top: 6px; 
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; 
+    color: #000000;
+    line-height: 1.4;
+}
+
+.t-pay-btn {
+    /* ... параметры ... */
+    font-size: 14px; font-weight: 700;
+    /* ... параметры ... */
+}
+
+/* === ЗЕЛЕНАЯ КНОПКА (ТЕХНИЧЕСКАЯ КОПИЯ ЖЕЛТОЙ) === */
+.t-confirm-btn {
+    /* Отступ как просил */
+    margin-top: 20px; 
+    
+    /* Эти параметры взяты 1-в-1 из .t-pay-btn */
+    width: 100%; 
+    height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; 
+    font-size: 14px; font-weight: 700; 
+    cursor: pointer;
+    
+    /* САМОЕ ГЛАВНОЕ: Та же скорость, что у желтой */
+    transition: 0.2s;
+
+    /* Цвет: Зеленый */
+    background-color: #27AE60; 
+    color: #FFFFFF;
+}
+
+/* При наведении (как у желтой: opacity 0.8) */
+.t-confirm-btn:hover {
+    opacity: 0.8;
+}
+
+/* === СОСТОЯНИЕ: СТАЛА СЕРОЙ (ПЛАВНЫЙ ПЕРЕХОД) === */
+/* Так как у родителя есть transition: 0.2s, цвет перетечет плавно */
+.t-confirm-btn.checking {
+    background-color: #333333; /* Серый фон */
+    color: #888888;            /* Тусклый текст */
+    pointer-events: none;      /* Нажать нельзя */
+    cursor: default;           /* Стрелка */
+    opacity: 1;                /* Убираем эффекты наведения */
 }

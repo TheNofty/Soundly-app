@@ -210,3 +210,30 @@ body {
     pointer-events: none !important; /* Запрещает нажимать */
     cursor: default !important;      /* Убирает руку, ставит стрелку */
 }
+
+/* === СТИЛЬ СЕРОГО ОКНА БАНА === */
+#ban-screen-overlay {
+    display: none; /* Скрыто */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    
+    background-color: #222222; /* ТВОЙ ЗАПРОС: Серое окно */
+    
+    z-index: 999999; /* Поверх всего */
+    align-items: center; justify-content: center;
+    flex-direction: column;
+}
+
+.ban-title {
+    font-family: 'Onder', sans-serif;
+    font-size: 24px; font-weight: 700;
+    color: #fff; margin: 0;
+    text-transform: uppercase; letter-spacing: 1px;
+}
+
+.ban-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #888; /* Чуть темнее текст */
+    margin-top: 20px; /* ТВОЙ ЗАПРОС: Отступ 20px */
+}

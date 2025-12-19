@@ -60,6 +60,23 @@ auth.onAuthStateChanged((user) => {
                 if (doc.exists) {
                     const data = doc.data();
 
+                    // === [ БЛОК ПРОВЕРКИ БАНА ] ===
+                    const banScreen = document.getElementById('ban-screen-overlay');
+                    
+                    if (data.subscription === "banned") {
+                        // ЮЗЕР ЗАБАНЕН -> ПОКАЗЫВАЕМ ЭКРАН
+                        if (banScreen) {
+                            banScreen.style.display = 'flex';
+                            document.getElementById('ban-date-text').innerText = "до " + (data.ban_expires || "...");
+                        }
+                    } else {
+                        // ЮЗЕР ЧИСТ -> УБИРАЕМ ЭКРАН
+                        if (banScreen) banScreen.style.display = 'none';
+                        // Принудительно вызываем Главную, чтобы функция openPage скрыла плеер
+                        openPage(null, 'page-home');
+                    }
+                    // ==============================
+
                     // 1. ТЕКСТЫ (Кредиты / Ник)
                     const crLabel = document.getElementById('user-credits');
                     const niLabel = document.getElementById('profile-username');
@@ -306,17 +323,42 @@ function updateVolume(e) {
     if(volKnob) volKnob.style.left = percent + '%';
 }
 
-// Переход на страницу оплаты
+// === ПЕРЕХОД НА ОПЛАТУ (УСКОРЕННАЯ - QR УЖЕ В HTML) ===
 function goToCheckoutPage() {
-    // 1. Закрываем окно выбора
-    const modal = document.getElementById('payment-overlay');
-    if (modal) modal.style.display = 'none';
+    closeModal(); 
+    
+    // 1. БЕРЕМ ДАННЫЕ
+    const activeCard = document.querySelector('.pay-option-card.active');
+    const planNameText = document.getElementById('modal-title-text').innerText;
+    const currentNick = document.getElementById('profile-username').innerText;
 
-    // 2. Открываем белую страницу
-    const checkoutPage = document.getElementById('page-checkout');
-    if (checkoutPage) {
-        checkoutPage.style.display = 'flex';
+    let priceText = "0 ₽";
+    let periodText = "мес";
+    
+    if (activeCard) {
+        priceText = activeCard.querySelector('.pay-price').innerText;
+        periodText = activeCard.querySelector('.pay-period').innerText;
     }
+    
+    // 2. ВСТАВЛЯЕМ В ЧЕК
+    document.getElementById('chk-plan-name').innerText = planNameText;
+    document.getElementById('chk-sum').innerText = priceText;
+    document.getElementById('chk-period').innerText = "/ " + periodText;
+    
+    // 3. ВСТАВЛЯЕМ В ИНСТРУКЦИЮ
+    document.getElementById('inst-sum').innerText = priceText; 
+    document.getElementById('inst-nick').innerText = currentNick;
+    
+    // ПУНКТ С ГЕНЕРАЦИЕЙ QR УДАЛЕН.
+    // ОН ТЕПЕРЬ СТОИТ В HTML И ГРУЗИТСЯ МГНОВЕННО ПРИ ВХОДЕ.
+
+    // 4. ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
+    document.querySelectorAll('.content-frame').forEach(p => p.style.display = 'none');
+    const pl = document.querySelector('.bottom-player'); 
+    if(pl) pl.style.display = 'none';
+    
+    const chkPage = document.getElementById('page-checkout');
+    if (chkPage) chkPage.style.display = 'flex';
 }
 
 // === 6. УНИВЕРСАЛЬНАЯ ЛОГИКА КНОПОК ЛОГОТИПА (Аналог GetDescendants) ===
@@ -371,4 +413,38 @@ function changeMyAvatar(id) {
     if(u) {
         db.collection("users").doc(u.uid).update({ avatar_id: id });
     }
+}
+
+// === ПОМОЩНИК: СКРЫТИЕ/ПОКАЗ САЙТА (ЗАЩИТА ОТ МИГАНИЯ) ===
+function toggleSiteContent(show) {
+    const mainUI = document.querySelector('.middle-container');
+    const headUI = document.querySelector('.top-header');
+    
+    // Если true -> flex, иначе -> none (скрыть)
+    const displayVal = show ? 'flex' : 'none'; 
+    
+    if(mainUI) mainUI.style.display = displayVal;
+    if(headUI) headUI.style.display = displayVal;
+    
+    // Плеер отдельно, так как у него может быть свой стиль
+    const playUI = document.querySelector('.bottom-player');
+    if (playUI) playUI.style.display = show ? 'flex' : 'none';
+}
+
+// === ПОМОЩНИК: ПРОВЕРКА ДАТЫ (ИСТЕК ЛИ БАН?) ===
+function checkBanExpired(dateStr) {
+    if (!dateStr || dateStr === "PERMANENT") return false; 
+    try {
+        // Парсим твою дату: "15.12.2025 18:58"
+        // RegExp достает цифры: [15, 12, 2025, 18, 58]
+        let p = dateStr.match(/\d+/g); 
+        if(!p || p.length < 5) return false;
+        
+        // Месяц в JS с нуля (0-11), поэтому p[1]-1
+        const banEnd = new Date(p[2], p[1]-1, p[0], p[3], p[4]);
+        const now = new Date();
+
+        // Если текущее время больше даты бана -> TRUE (бан истек)
+        return now > banEnd; 
+    } catch(e) { return false; }
 }

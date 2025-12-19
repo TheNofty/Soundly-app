@@ -104,7 +104,7 @@ function registerUser() {
                 reg_date: getMoscowDate(),
                 avatar_id: randAva  // <--- ДОБАВИЛИ ВОТ ЭТО
             }).then(() => {
-                showStatus("Success!", "#00ff00");
+                showStatus("Success!", "#ffffffff");
                 setTimeout(() => window.location.href = "../index.html", 1500);
             });
             
