@@ -20,21 +20,35 @@
 
         const token = new URLSearchParams(window.location.search).get('token');
 
-        if(token) {
+        if (token) {
             db.collection("pending_registrations").doc(token).get().then(doc => {
                 if (doc.exists) {
                     const data = doc.data();
+                    
                     auth.createUserWithEmailAndPassword(data.email, data.pass).then(cred => {
                         db.collection("users").doc(cred.user.uid).set({
-                            nickname: data.nick, email: data.email, credits: 0,
-                            subscription: "Нет", reg_date: new Date().toLocaleDateString(), avatar_id: 1
+                            nickname: data.nick,
+                            email: data.email,
+                            credits: 0,
+                            subscription: "Нет",
+                            reg_date: new Date().toLocaleDateString(),
+                            avatar_id: 1
                         }).then(() => {
+                            // Чистим временную запись
                             db.collection("pending_registrations").doc(token).delete();
                             document.getElementById('status').innerText = "DONE! Redirecting...";
+                            
+                            // Выход из папки Soundly_Auth к главному файлу
                             setTimeout(() => { window.location.href = "../index.html"; }, 2000);
                         });
-                    }).catch(e => { document.getElementById('status').innerText = "Auth Error: " + e.message; });
-                } else { document.getElementById('status').innerText = "Link Expired."; }
+                    }).catch(e => {
+                        document.getElementById('status').innerText = "Auth Error: " + e.message;
+                    });
+                } else {
+                    document.getElementById('status').innerText = "Link invalid or expired.";
+                }
+            }).catch(e => {
+                document.getElementById('status').innerText = "DB Connection Error.";
             });
         }
     </script>
