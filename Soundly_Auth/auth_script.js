@@ -1,6 +1,6 @@
 let isManualTransition = false;
 
-// === 1. НОВЫЕ КЛЮЧИ (soundly-e318d) ===
+// === 1. ИНИЦИАЛИЗАЦИЯ ===
 const firebaseConfig = {
   apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk",
   authDomain: "soundly-e318d.firebaseapp.com",
@@ -16,27 +16,56 @@ try {
     firebase.initializeApp(firebaseConfig);
     auth = firebase.auth();
     db = firebase.firestore();
-    console.log("Firebase AUTH подключен: soundly-e318d");
-} catch (error) { console.error(error); }
+} catch (error) { console.error("Firebase Init Error"); }
 
-// UI Элементы
 const loginForm = document.getElementById('form-login');
 const registerForm = document.getElementById('form-register');
 const tabs = document.querySelectorAll('.tab');
 const statusText = document.getElementById('status-message');
 
-// === ФУНКЦИЯ АНИМАЦИИ ===
+// --- ЛОГИКА: ЧТО ПРОИСХОДИТ ПОСЛЕ КЛИКА ИЗ ПИСЬМА ---
+const urlParams = new URLSearchParams(window.location.search);
+const activeToken = urlParams.get('token');
+
+if (activeToken) {
+    showStatus("Confirming... Wait for it!", "white");
+    
+    db.collection("pending_registrations").doc(activeToken).get().then(async (doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            try {
+                // ЮЗЕР РОЖДАЕТСЯ В AUTH (Firebase Authentication)
+                const cred = await auth.createUserWithEmailAndPassword(data.email, data.pass);
+                
+                // ЮЗЕР РОЖДАЕТСЯ В БД (Админка Users Base)
+                await db.collection("users").doc(cred.user.uid).set({
+                    nickname: data.nick,
+                    email: data.email,
+                    credits: 0,
+                    subscription: "Нет",
+                    reg_date: getMoscowDate(),
+                    avatar_id: Math.floor(Math.random() * 6) + 1
+                });
+
+                // Удаляем временную заявку из очереди
+                await db.collection("pending_registrations").doc(activeToken).delete();
+                
+                showStatus("Ready! You can log in now.", "white");
+                // Убираем "?token=..." из адреса
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (e) { showStatus("Error: Token expired or used.", "red"); }
+        }
+    });
+}
+
+// === 2. ПОМОЩНИКИ ===
 function startAnimationAndGo() {
     isManualTransition = true;
     const loader = document.getElementById('simple-loader');
     if (loader) loader.style.display = 'flex';
-    
-    setTimeout(() => {
-        window.location.href = "../index.html";
-    }, 2000);
+    setTimeout(() => { window.location.href = "../index.html"; }, 2000);
 }
 
-// Переключение (Flex для сохранения размеров)
 function switchTab(type) {
     tabs.forEach(t => t.classList.remove('active'));
     showStatus("", "white"); 
@@ -47,144 +76,127 @@ function switchTab(type) {
     }
 }
 
-// === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: ДАТА (МСК) ===
 function getMoscowDate() {
     const now = new Date();
-    // Формат: 10.12.2025 23:05
     const options = { 
         timeZone: "Europe/Moscow",
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit', hour12: false
     };
-    
-    // Получаем "12.12.2025, 23:05" (может быть с запятой)
     let raw = now.toLocaleString("ru-RU", options);
-    
-    // !!! ИСПРАВЛЕНО: УБРАЛ ПРОБЕЛ ПОСЛЕ ЗАПЯТОЙ !!!
-    // Заменяем ", " на " ("
-    // Результат: 12.12.2025 (23:05)
     return raw.replace(', ', ' (').replace(',', ' (') + ')'; 
 }
 
-// === РЕГИСТРАЦИЯ ===
+function showStatus(t, c) { if(statusText) { statusText.innerText = t; statusText.style.color = c; } }
+
+function resetPassword() { alert("Check email for reset link (Soon)"); }
+
+function togglePass(inputId, iconElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const isPass = input.type === 'password';
+    input.type = isPass ? 'text' : 'password';
+    iconElement.classList.toggle('viewing', isPass);
+}
+
+// === 3. РЕГИСТРАЦИЯ (СИСТЕМА PENDING — БЕЗ БЛОКИРОВКИ AUTH) ===
 function registerUser() {
-    const nick = document.getElementById('reg-nick').value;
-    const email = document.getElementById('reg-email').value;
+    const nick = document.getElementById('reg-nick').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
     const pass = document.getElementById('reg-pass').value;
 
     showStatus("", "white");
+    
+    // Валидация (Минимум лирики, только факты)
+    if (nick.length < 4 || nick.length > 15) return showStatus("Username: 4-15 chars", "white");
+    if (!email.includes("@")) return showStatus("Invalid Email", "white");
+    if (pass.length < 6) return showStatus("Password: min 6 chars", "white");
 
-    if (nick.length < 4 || nick.length > 15) return showStatus("Nick 4-15 symbols", "red");
-    if (!/^[a-zA-Z0-9]+$/.test(nick)) return showStatus("Nick English + Numbers only", "red");
-    if (!email.includes("@")) return showStatus("Invalid Email", "red");
-    if (pass.length < 5) return showStatus("Password min 5 chars", "red");
-    if (pass.length > 50) return showStatus("Password max 50 chars", "red");
+    showStatus("Sending email link...", "white");
 
-    showStatus("Checking database...", "yellow");
+    // Генерируем уникальный токен
+    const token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+    
+    // ТВОЯ_ССЫЛКА_ИЗ_DEPLOY_В_SCRIPT_GOOGLE_COM (Вставь свою!)
+    const botURL = "https://script.google.com/macros/s/AKfycbzSNGW6WlCOaP-mgFmvrqPHIsqJpGKJBY3Jy4np632B13ojBr9oSns-4H0mKQ3KaRrSbw/exec";
 
-    // 1. Проверка ника
-    db.collection("users").where("nickname", "==", nick).get()
-    .then((querySnapshot) => {
-        if (!querySnapshot.empty) return showStatus("Nickname Taken!", "red");
+    // ШАГ 1: Запись в Firestore (pending_registrations)
+    // В Authentication в это время ПУСТО.
+    db.collection("pending_registrations").doc(token).set({
+        nick: nick,
+        email: email,
+        pass: pass,
+        created_at: Date.now()
+    }).then(() => {
+        // ШАГ 2: Пинг нашего GAS бота для отправки письма
+        // Ссылка в письме будет вести на verify.html?token=...
+        console.log("BRAT, ОТПРАВЛЯЮ ЗАПРОС БОТУ..."); // Print в консоль браузера
+        fetch(`${botURL}?email=${email}&nick=${nick}&token=${token}`, { mode: 'no-cors' })
+            .then(() => {
+                console.log("ЗАПРОС УШЕЛ УСПЕШНО. ТОКЕН:", token);
+                showStatus("Link sent! Check your inbox.", "white");
+            })
+            .catch(err => console.log("КОСЯК С ФЕТЧЕМ:", err));
 
-        // 2. Создание
-        showStatus("Creating...", "yellow");
-        auth.createUserWithEmailAndPassword(email, pass).then((cred) => {
-            
-            // 3. Запись в базу (ВСЕ ДАННЫЕ)
-            // Генерируем случайную аватарку (от 1 до 6)
-            const randAva = Math.floor(Math.random() * 6) + 1;
+        // Очистка полей (сетка 2000ms = 2 сек)
+        setTimeout(() => {
+            document.getElementById('reg-nick').value = "";
+            document.getElementById('reg-email').value = "";
+            document.getElementById('reg-pass').value = "";
+        }, 2000);
 
-            db.collection("users").doc(cred.user.uid).set({
-                nickname: nick, 
-                email: email, 
-                password: pass,          
-                credits: 0,              
-                subscription: "Нет",     
-                reg_date: getMoscowDate(),
-                avatar_id: randAva  // <--- ДОБАВИЛИ ВОТ ЭТО
-            }).then(() => {
-                showStatus("Success!", "#ffffffff");
-                setTimeout(() => window.location.href = "../index.html", 1500);
-            });
-            
-        }).catch(e => {
-            let msg = e.message;
-            if(e.code === 'auth/email-already-in-use') msg = "Email Taken";
-            showStatus(msg, "red");
-        });
-    })
-    .catch((e) => showStatus("Error (Check Rules in Firebase)", "red"));
+    }).catch((error) => {
+        console.error(error);
+        showStatus("Database error. Try later.", "red");
+    });
 }
 
-// ВХОД
-function loginUser() {
-    const email = document.getElementById('login-email').value;
+// === 4. ВХОД ===
+async function loginUser() {
+    const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value;
     if(!email || !pass) return showStatus("Enter data", "white");
     
-    showStatus("Authorization...", "white");
+    showStatus("Authorizing...", "white");
     
-    auth.signInWithEmailAndPassword(email, pass).then(() => {
-        showStatus("Success!", "white");
+    try {
+        const cred = await auth.signInWithEmailAndPassword(email, pass);
+        // 🚀 ВАЖНЫЙ МОМЕНТ:
+        // Перезагружаем данные пользователя с серверов Google
+        await cred.user.reload();
         
-        // ЗАПУСК ЗАГРУЗКИ
-        startAnimationAndGo(); 
-        
-    }).catch(() => showStatus("Wrong Login/Pass", "white"));
-}
+        // Берем актуальное состояние ПОСЛЕ перезагрузки
+        const currentUser = auth.currentUser;
 
-function resetPassword() { alert("Coming soon"); }
-function showStatus(t, c) { if(statusText) { statusText.innerText = t; statusText.style.color = c; } }
+        if (currentUser.emailVerified) {
+            // Кнопка нажата. Идем в базу.
+            const doc = await db.collection("users").doc(currentUser.uid).get();
 
-switchTab('login');
+            if (!doc.exists) {
+                // ПЕРВЫЙ УСПЕШНЫЙ ВХОД -> Создаем запись для Админки
+                const randAva = Math.floor(Math.random() * 6) + 1;
+                
+                await db.collection("users").doc(currentUser.uid).set({
+                    nickname: currentUser.displayName || "NewUser",
+                    email: currentUser.email, 
+                    credits: 0,              
+                    subscription: "Нет",     
+                    reg_date: getMoscowDate(), 
+                    avatar_id: randAva
+                });
+            }
 
-// === ПОКАЗАТЬ / СКРЫТЬ ПАРОЛЬ ===
-function togglePass(inputId, iconElement) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-
-    if (input.type === 'password') {
-        input.type = 'text'; // Показываем
-        iconElement.classList.add('viewing'); // Меняем цвет глазика
-    } else {
-        input.type = 'password'; // Скрываем
-        iconElement.classList.remove('viewing');
+            showStatus("Success!", "white");
+            startAnimationAndGo(); 
+        } else {
+            showStatus("Verify email via button first!", "yellow");
+            auth.signOut(); // Выкидываем, пока не подтвердит
+        }
+    } catch(e) {
+        showStatus("Invalid Login or Password", "white");
+        console.error("Login Error:", e.message);
     }
 }
 
-// ВХОД
-function loginUser() {
-    const email = document.getElementById('login-email').value;
-    const pass = document.getElementById('login-pass').value;
-    if(!email || !pass) return showStatus("Enter data", "white");
-    
-    showStatus("Authorization...", "white");
-    
-    auth.signInWithEmailAndPassword(email, pass).then(() => {
-        showStatus("Success!", "white");
-        
-        // ЗАПУСК ЗАГРУЗКИ
-        startAnimationAndGo(); 
-        
-    }).catch(() => showStatus("Wrong Login/Pass", "white"));
-}
-
-function resetPassword() { alert("Coming soon"); }
-function showStatus(t, c) { if(statusText) { statusText.innerText = t; statusText.style.color = c; } }
-
+// СТАРТ: Включаем вкладку входа
 switchTab('login');
-
-// === ПОКАЗАТЬ / СКРЫТЬ ПАРОЛЬ ===
-function togglePass(inputId, iconElement) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-
-    if (input.type === 'password') {
-        input.type = 'text'; // Показываем
-        iconElement.classList.add('viewing'); // Меняем цвет глазика
-    } else {
-        input.type = 'password'; // Скрываем
-        iconElement.classList.remove('viewing');
-    }
-}
