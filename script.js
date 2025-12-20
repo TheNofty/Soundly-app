@@ -348,18 +348,14 @@ function goToCheckoutPage() {
     if (chkPage) chkPage.style.display = 'flex';
 }
 
-// === 6. УНИВЕРСАЛЬНАЯ ЛОГИКА КНОПОК ЛОГОТИПА (Аналог GetDescendants) ===
-// Этот код находит ВСЕ кнопки логотипа на любой странице и заставляет их работать
+// === 6. УНИВЕРСАЛЬНАЯ ЛОГИКА КНОПОК ЛОГОТИПА (БЕЗ ПЕРЕЗАГРУЗКИ) ===
 function initLogoButtons() {
-    // Находим все элементы с классом зоны клика
     const allLogos = document.querySelectorAll('.logo-click-zone');
     
-    // Проходимся по каждому найденному (foreach)
     allLogos.forEach(button => {
-        // Вешаем событие "клик"
         button.onclick = function() {
-            // Действие: Полная перезагрузка приложения (Вернуться в начало)
-            window.location.reload();
+            // МЕНЯЕМ reload НА ПЛАВНЫЙ ПЕРЕХОД ДОМОЙ
+            openPage(null, 'page-home');
         };
     });
 }
