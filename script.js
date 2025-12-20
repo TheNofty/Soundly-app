@@ -22,11 +22,14 @@ const AVATAR_PATH_FIX = "Interface/Icons/Profile/Avatar/Avatar";
 // === ФУНКЦИЯ УСТАНОВКИ КАРТИНКИ (СТАБИЛЬНАЯ) ===
 function setAvatarOnPage(id) {
     if (!id) return;
-    const finalSrc = `${AVATAR_PATH_FIX}${id}.png`;
+    const finalSrc = `Interface/Icons/Profile/Avatar/Avatar${id}.png`;
+    
     const hImg = document.getElementById('user-avatar');
-    if (hImg) hImg.src = finalSrc;
     const pImg = document.getElementById('profile-big-avatar');
-    if (pImg) pImg.src = finalSrc;
+
+    // Если картинка уже стоит такая же — не трогаем (защита от моргания)
+    if (hImg && hImg.getAttribute('src') !== finalSrc) hImg.src = finalSrc;
+    if (pImg && pImg.getAttribute('src') !== finalSrc) pImg.src = finalSrc;
 }
 
 // === 🚀 1. МГНОВЕННАЯ ЗАГРУЗКА ИЗ ПАМЯТИ ===
@@ -368,24 +371,15 @@ function closeAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'n
 function changeMyAvatar(id) {
     closeAvatarModal();
 
-    // 1. Сброс кэша картинки
-    const timeStamp = new Date().getTime(); 
-    const finalSrc = `${AVATAR_PATH_FIX}${id}.png?time=${timeStamp}`;
-
-    // 2. Обновление в UI
-    const hImg = document.getElementById('user-avatar');
-    if (hImg) hImg.src = finalSrc;
-
-    const pImg = document.getElementById('profile-big-avatar');
-    if (pImg) pImg.src = finalSrc;
-    
-    // 3. Сохраняем в кэш (ID)
+    // 🚀 ОПТИМИСТИЧНЫЙ UI: Сначала меняем на экране, потом в базе
+    setAvatarOnPage(id); 
     localStorage.setItem('soundly_my_avatar_id', id);
 
-    // 4. Отправляем в базу
     const u = auth.currentUser;
     if(u) {
-        db.collection("users").doc(u.uid).update({ avatar_id: id });
+        // База обновляется в фоне, юзер не ждет ответа от серверов Google
+        db.collection("users").doc(u.uid).update({ avatar_id: id })
+        .catch(err => console.error("Ошибка сохранения:", err));
     }
 }
 
