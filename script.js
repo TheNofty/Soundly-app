@@ -44,32 +44,46 @@ function goLogin() {
     });
 }
 
-// === АВТОРИЗАЦИЯ + МГНОВЕННЫЙ ЗАГРУЗ ДАННЫХ ===
-// === УСКОРЕННЫЙ ВХОД (БЕЗ МАСКИРОВКИ) ===
+// === 3. СИСТЕМА УСКОРЕННОЙ ЗАГРУЗКИ (SPEEDRUN) ===
 auth.onAuthStateChanged((user) => {
     if (!user) return goLogin();
 
-    // Первый удар: СТРОГО забираем данные без задержек
+    // Первый "удар" по базе (БЫСТРЕЕ ВСЕГО)
     db.collection("users").doc(user.uid).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
             
-            // Мгновенная замена заглушек
-            const creditsEl = document.getElementById('user-credits');
-            const nicknameEl = document.getElementById('profile-username');
-
-            if (creditsEl) creditsEl.innerText = data.credits || 0;
-            if (nicknameEl) nicknameEl.innerText = data.nickname ? "@" + data.nickname : "@User";
+            // Сразу меняем @loading на Ник и 0 на Кредиты
+            const crLabel = document.getElementById('user-credits');
+            const niLabel = document.getElementById('profile-username');
+            if (crLabel) crLabel.innerText = data.credits || 0;
+            if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
             
+            // Сразу ставим аватарку
             setAvatarOnPage(data.avatar_id || 1);
+            
+            // Включаем сайт
             openPage(null, 'page-home');
 
-            // Живая связь для кредитов
+            // Подключаем живую связь (тихий мониторинг на заднем плане)
             db.collection("users").doc(user.uid).onSnapshot(s => {
                 const upd = s.data();
-                if(upd && creditsEl) creditsEl.innerText = upd.credits || 0;
+                if(!upd) return;
+
+                // Если админ в риалтайме добавил кредитов — цифра поменяется
+                if (crLabel) crLabel.innerText = upd.credits || 0;
+
+                // Если влетел бан — показываем экран блокировки
+                if (upd.subscription === "banned") {
+                    const bs = document.getElementById('ban-screen-overlay');
+                    if (bs) bs.style.display = 'flex';
+                    document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
+                }
             });
-        } else { goLogin(); }
+        } else {
+            // Если в Auth есть, а базы нет — значит аккаунт еще в пути (Verify link)
+            console.log("Soundly: Ожидание профиля...");
+        }
     }).catch(() => goLogin());
 });
 
@@ -360,22 +374,21 @@ function closeAvatarModal() { if(avatarOverlay) avatarOverlay.style.display = 'n
 function changeMyAvatar(id) {
     closeAvatarModal();
 
-    // 1. Формируем путь + добавляем время, чтобы сбросить "битый" кэш
-    // Пример: .../Avatar3.png?time=12345678
+    // 1. Сброс кэша картинки
     const timeStamp = new Date().getTime(); 
     const finalSrc = `${AVATAR_PATH_FIX}${id}.png?time=${timeStamp}`;
 
-    // 2. Ставим картинку принудительно
+    // 2. Обновление в UI
     const hImg = document.getElementById('user-avatar');
     if (hImg) hImg.src = finalSrc;
 
     const pImg = document.getElementById('profile-big-avatar');
     if (pImg) pImg.src = finalSrc;
     
-    // 3. Сохраняем ID в память браузера (чтобы при F5 работало)
+    // 3. Сохраняем в кэш (ID)
     localStorage.setItem('soundly_my_avatar_id', id);
 
-    // 4. Отправляем чистый ID в Базу
+    // 4. Отправляем в базу
     const u = auth.currentUser;
     if(u) {
         db.collection("users").doc(u.uid).update({ avatar_id: id });
