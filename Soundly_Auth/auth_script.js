@@ -28,6 +28,8 @@ function startAnimationAndGo() {
     isManualTransition = true;
     const loader = document.getElementById('simple-loader');
     if (loader) loader.style.display = 'flex';
+    // Добавляем команду переключения на основной сайт!
+    setTimeout(() => { window.location.href = "../index.html"; }, 2000);
 }
 
 function switchTab(type) {
