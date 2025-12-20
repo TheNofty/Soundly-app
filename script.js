@@ -22,18 +22,17 @@ const AVATAR_PATH_FIX = "Interface/Icons/Profile/Avatar/Avatar";
 // === ФУНКЦИЯ УСТАНОВКИ КАРТИНКИ (СТАБИЛЬНАЯ) ===
 function setAvatarOnPage(id) {
     if (!id) return;
-    
-    // УБРАЛИ ?v=... чтобы браузер нормально кэшировал картинки
-    // Теперь они не будут мерцать и пропадать "рандомно"
     const finalSrc = `${AVATAR_PATH_FIX}${id}.png`;
-    
-    // Меняем в шапке
     const hImg = document.getElementById('user-avatar');
     if (hImg) hImg.src = finalSrc;
-
-    // Меняем в профиле
     const pImg = document.getElementById('profile-big-avatar');
     if (pImg) pImg.src = finalSrc;
+}
+
+// === 🚀 1. МГНОВЕННАЯ ЗАГРУЗКА ИЗ ПАМЯТИ ===
+const cachedAva = localStorage.getItem('soundly_my_avatar_id');
+if (cachedAva) {
+    setAvatarOnPage(cachedAva);
 }
 
 // === 2. ФУНКЦИЯ "ПИНОК" ===
@@ -44,47 +43,42 @@ function goLogin() {
     });
 }
 
-// === 3. СИСТЕМА УСКОРЕННОЙ ЗАГРУЗКИ (SPEEDRUN) ===
+// === 3. ПОЛНАЯ ЗАГРУЗКА ИЗ БАЗЫ (СИНХРОНИЗАЦИЯ) ===
 auth.onAuthStateChanged((user) => {
-    if (!user) return goLogin();
+    if (user) {
+        db.collection("users").doc(user.uid).onSnapshot((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                const banScreen = document.getElementById('ban-screen-overlay');
+                
+                if (data.subscription === "banned") {
+                    if (banScreen) {
+                        banScreen.style.display = 'flex';
+                        document.getElementById('ban-date-text').innerText = "до " + (data.ban_expires || "...");
+                    }
+                } else {
+                    if (banScreen) banScreen.style.display = 'none';
+                    
+                    const crLabel = document.getElementById('user-credits');
+                    const niLabel = document.getElementById('profile-username');
+                    if (crLabel) crLabel.innerText = data.credits || 0;
+                    if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
 
-    // Первый "удар" по базе (БЫСТРЕЕ ВСЕГО)
-    db.collection("users").doc(user.uid).get().then((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            
-            // Сразу меняем @loading на Ник и 0 на Кредиты
-            const crLabel = document.getElementById('user-credits');
-            const niLabel = document.getElementById('profile-username');
-            if (crLabel) crLabel.innerText = data.credits || 0;
-            if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
-            
-            // Сразу ставим аватарку
-            setAvatarOnPage(data.avatar_id || 1);
-            
-            // Включаем сайт
-            openPage(null, 'page-home');
-
-            // Подключаем живую связь (тихий мониторинг на заднем плане)
-            db.collection("users").doc(user.uid).onSnapshot(s => {
-                const upd = s.data();
-                if(!upd) return;
-
-                // Если админ в риалтайме добавил кредитов — цифра поменяется
-                if (crLabel) crLabel.innerText = upd.credits || 0;
-
-                // Если влетел бан — показываем экран блокировки
-                if (upd.subscription === "banned") {
-                    const bs = document.getElementById('ban-screen-overlay');
-                    if (bs) bs.style.display = 'flex';
-                    document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
+                    const serverId = data.avatar_id || 1;
+                    if (serverId != localStorage.getItem('soundly_my_avatar_id')) {
+                        localStorage.setItem('soundly_my_avatar_id', serverId);
+                        setAvatarOnPage(serverId);
+                    }
                 }
-            });
-        } else {
-            // Если в Auth есть, а базы нет — значит аккаунт еще в пути (Verify link)
-            console.log("Soundly: Ожидание профиля...");
-        }
-    }).catch(() => goLogin());
+            } else {
+                console.log("Soundly: Ожидание создания профиля...");
+            }
+        });
+
+        openPage(null, 'page-home');
+    } else {
+        goLogin(); 
+    }
 });
 
 // Функция пинка
