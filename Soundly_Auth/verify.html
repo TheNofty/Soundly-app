@@ -31,7 +31,7 @@
                         }).then(() => {
                             db.collection("pending_registrations").doc(token).delete();
                             document.getElementById('status').innerText = "DONE! Redirecting...";
-                            setTimeout(() => { window.location.href = "index.html"; }, 2000);
+                            setTimeout(() => { window.location.href = "../index.html"; }, 2000);
                         });
                     }).catch(e => { document.getElementById('status').innerText = "Auth Error: " + e.message; });
                 } else { document.getElementById('status').innerText = "Link Expired."; }
