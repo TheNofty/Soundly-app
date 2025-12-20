@@ -1,6 +1,8 @@
 @font-face {
     font-family: 'Onder';
     src: url('../Interface/Fonts/ONDER-REGULAR.ttf') format('truetype');
+    /* Брат, это отключает режим ожидания. Текст виден сразу, шрифт подменится сам. */
+    font-display: swap; 
 }
 
 :root {

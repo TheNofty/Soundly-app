@@ -51,10 +51,8 @@ auth.onAuthStateChanged((user) => {
     if (!user) return goLogin();
 
     // 🚀 СИНХРОННО ЖДЕМ ДАННЫЕ И ШРИФТЫ
-    Promise.all([
-        db.collection("users").doc(user.uid).get(), 
-        document.fonts.ready
-    ]).then(([doc]) => {
+    // Шрифты больше не ждем, база первична. Заходим мгновенно.
+    db.collection("users").doc(user.uid).get().then((doc) => {
         if (!doc.exists) return console.log("Soundly: Waiting profile...");
         const data = doc.data();
         
