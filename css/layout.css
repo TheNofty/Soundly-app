@@ -20,10 +20,23 @@ body {
 .top-header {
     height: var(--header-h); width: 100%;
     background-color: var(--panel-color);
-    /* ГЛАВНОЕ ИСПРАВЛЕНИЕ: Центруем содержимое шапки по вертикали */
     display: flex; align-items: center; 
     z-index: 200; flex-shrink: 0;
     border-bottom: none;
+    
+    /* БЛОКИРОВКА: Невидимый + НЕ кликабельный */
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.5s ease;
+}
+
+.middle-container {
+    flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative;
+    
+    /* БЛОКИРОВКА: Невидимый + НЕ кликабельный */
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.5s ease;
 }
 
 /* 1. РОДИТЕЛЬ (Фон) - БЕЗ ЛИНИИ */
