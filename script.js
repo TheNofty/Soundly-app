@@ -56,15 +56,28 @@ auth.onAuthStateChanged((user) => {
         if (header) { header.style.opacity = '1'; header.style.pointerEvents = 'auto'; }
         if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
 
-        // --- 2. ПУЛЬС ОНЛАЙНА ---
-        db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
-        // 🚀 ПУЛЬС РАЗ В 5 СЕКУНД
-        // 🚀 МОЛНИЕНОСНЫЙ ПУЛЬС: стучим в базу каждую 1 секунду
-        setInterval(() => {
-            if (firebase.auth().currentUser) {
-                db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
+        // --- 🚀 ЕДИНЫЙ ПУЛЬС: ЖИВАЯ АКТИВНОСТЬ ---
+        const heartBeat = () => {
+            const currentU = firebase.auth().currentUser;
+            if (currentU) {
+                db.collection("users").doc(currentU.uid).update({ 
+                    last_active: Date.now() 
+                }).catch(()=>{});
             }
-        }, 1000);
+        };
+
+        // Мгновенная активация
+        heartBeat(); 
+        const hbInterval = setInterval(heartBeat, 1000);
+
+        // ФИКС БАГА: Пробуждение вкладки без перезагрузки (Visibility + Focus)
+        ["visibilitychange", "focus"].forEach(evt => {
+            window.addEventListener(evt, () => {
+                if (document.visibilityState === "visible") heartBeat();
+            });
+        });
+        // -----------------------------------------
+        // ------------------------------------
 
         // --- 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
