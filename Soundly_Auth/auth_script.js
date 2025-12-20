@@ -63,10 +63,10 @@ function togglePass(inputId, iconElement) {
     iconElement.classList.toggle('viewing', isPass);
 }
 
-// === 3. РЕГИСТРАЦИЯ (СИСТЕМА PENDING — БЕЗ БЛОКИРОВКИ AUTH) ===
+// === 3. РЕГИСТРАЦИЯ (СЛУШАТЕЛЬ УСПЕХА — ОЖИДАНИЕ КЛИКА В ПОЧТЕ) ===
 function registerUser() {
     const regBtn = document.querySelector('.auth-btn.outline');
-    if (regBtn.disabled) return; 
+    if (regBtn.disabled) return;
     regBtn.disabled = true;
     regBtn.style.opacity = "0.5";
 
@@ -78,17 +78,19 @@ function registerUser() {
     if (!email.includes("@")) return resetRegBtn("Invalid Email");
     if (pass.length < 6) return resetRegBtn("Password: min 6 chars");
 
-    showStatus("Please verify your email to continue...", "white");
+    showStatus("Please confirm the link in your email...", "white");
 
-    // СЛУШАТЕЛЬ УСПЕХА (Discord Style)
+    // "МАГИЯ" — Эта страница сама залогинит юзера, когда он подтвердит почту в телефоне
     const unsub = db.collection("users").where("email", "==", email).onSnapshot((snap) => {
         if (!snap.empty) {
             unsub(); 
-            showStatus("Verified! Logging in...", "white");
-            // Прокидываем данные для автоматического входа
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-pass').value = pass;
-            setTimeout(() => { loginUser(); }, 1500); 
+            showStatus("Email confirmed! Logging in...", "white");
+            // Автозаполнение и вход
+            setTimeout(() => {
+                document.getElementById('login-email').value = email;
+                document.getElementById('login-pass').value = pass;
+                loginUser();
+            }, 1000);
         }
     });
 
@@ -99,7 +101,7 @@ function registerUser() {
         nick: nick, email: email, pass: pass, time: Date.now()
     }).then(() => {
         fetch(`${botURL}?email=${email}&nick=${nick}&token=${token}`, { mode: 'no-cors' });
-    }).catch(() => resetRegBtn("DB Error"));
+    }).catch(() => resetRegBtn("Database Error"));
 }
 
 // Хелпер сброса кнопки
