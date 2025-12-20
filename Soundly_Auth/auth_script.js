@@ -28,7 +28,6 @@ function startAnimationAndGo() {
     isManualTransition = true;
     const loader = document.getElementById('simple-loader');
     if (loader) loader.style.display = 'flex';
-    setTimeout(() => { window.location.href = "../index.html"; }, 2000);
 }
 
 function switchTab(type) {
@@ -66,51 +65,56 @@ function togglePass(inputId, iconElement) {
 
 // === 3. РЕГИСТРАЦИЯ (СИСТЕМА PENDING — БЕЗ БЛОКИРОВКИ AUTH) ===
 function registerUser() {
+    const regBtn = document.querySelector('.auth-btn.outline');
+    if (regBtn.disabled) return; 
+    regBtn.disabled = true;
+    regBtn.style.opacity = "0.5";
+
     const nick = document.getElementById('reg-nick').value.trim();
     const email = document.getElementById('reg-email').value.trim();
     const pass = document.getElementById('reg-pass').value;
 
-    showStatus("", "white");
-    
-    // Валидация (Минимум лирики, только факты)
-    if (nick.length < 4 || nick.length > 15) return showStatus("Username: 4-15 chars", "white");
-    if (!email.includes("@")) return showStatus("Invalid Email", "white");
-    if (pass.length < 6) return showStatus("Password: min 6 chars", "white");
+    if (nick.length < 4 || nick.length > 15) return resetRegBtn("Username: 4-15 chars");
+    if (!email.includes("@")) return resetRegBtn("Invalid Email");
+    if (pass.length < 6) return resetRegBtn("Password: min 6 chars");
 
-    showStatus("Sending email link...", "white");
+    showStatus("Please verify your email to continue...", "white");
 
-    // Генерируем уникальный токен
-    const token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
-    
-    // ТВОЯ_ССЫЛКА_ИЗ_DEPLOY_В_SCRIPT_GOOGLE_COM (Вставь свою!)
-    // Проверь этот URL. Он должен быть 1 в 1 как тот, что ты скинул:
-    const botURL = "https://script.google.com/macros/s/AKfycbxGlkrNJNEKggZ1-o03-X2_DlIALy15XSm0mw4flgSVG-TAX2Yt-5Ila28c0u21lkFdOw/exec";
-    // ШАГ 1: Запись в Firestore (pending_registrations)
-    // В Authentication в это время ПУСТО.
-    db.collection("pending_registrations").doc(token).set({
-        nick: nick,
-        email: email,
-        pass: pass,
-        created_at: Date.now()
-    }).then(() => {
-        fetch(`${botURL}?email=${email}&nick=${nick}&token=${token}`, { mode: 'no-cors' })
-            .then(() => {
-                console.log("ЗАПРОС УШЕЛ УСПЕШНО. ТОКЕН:", token);
-                showStatus("Link sent! Check your inbox.", "white");
-            })
-            .catch(err => console.log("КОСЯК С ФЕТЧЕМ:", err));
-
-        // Очистка полей (сетка 2000ms = 2 сек)
-        setTimeout(() => {
-            document.getElementById('reg-nick').value = "";
-            document.getElementById('reg-email').value = "";
-            document.getElementById('reg-pass').value = "";
-        }, 2000);
-
-    }).catch((error) => {
-        console.error(error);
-        showStatus("Database error. Try later.", "red");
+    // СЛУШАТЕЛЬ УСПЕХА (Discord Style)
+    const unsub = db.collection("users").where("email", "==", email).onSnapshot((snap) => {
+        if (!snap.empty) {
+            unsub(); 
+            showStatus("Verified! Logging in...", "white");
+            // Прокидываем данные для автоматического входа
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-pass').value = pass;
+            setTimeout(() => { loginUser(); }, 1500); 
+        }
     });
+
+    const token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+    const botURL = "https://script.google.com/macros/s/AKfycbxGlkrNJNEKggZ1-o03-X2_DlIALy15XSm0mw4flgSVG-TAX2Yt-5Ila28c0u21lkFdOw/exec";
+
+    db.collection("pending_registrations").doc(token).set({
+        nick: nick, email: email, pass: pass, time: Date.now()
+    }).then(() => {
+        fetch(`${botURL}?email=${email}&nick=${nick}&token=${token}`, { mode: 'no-cors' });
+    }).catch(() => resetRegBtn("DB Error"));
+}
+
+// Хелпер сброса кнопки
+function resetRegBtn(msg) {
+    const regBtn = document.querySelector('.auth-btn.outline');
+    showStatus(msg, "white");
+    regBtn.disabled = false;
+    regBtn.style.opacity = "1";
+}
+
+function resetRegBtn(msg) {
+    const regBtn = document.querySelector('.auth-btn.outline');
+    showStatus(msg, "white");
+    regBtn.disabled = false;
+    regBtn.style.opacity = "1";
 }
 
 // === 4. ВХОД (БЕЗ ПРОВЕРКИ EMAIL_VERIFIED) ===
