@@ -59,11 +59,12 @@ auth.onAuthStateChanged((user) => {
         // --- 2. ПУЛЬС ОНЛАЙНА ---
         db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
         // 🚀 ПУЛЬС РАЗ В 5 СЕКУНД
+        // 🚀 МОЛНИЕНОСНЫЙ ПУЛЬС: стучим в базу каждую 1 секунду
         setInterval(() => {
             if (firebase.auth().currentUser) {
                 db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
             }
-        }, 5000);
+        }, 1000);
 
         // --- 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
