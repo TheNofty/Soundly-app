@@ -48,47 +48,51 @@ function goLogin() {
 
 // === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + ШРИФТОВ ===
 auth.onAuthStateChanged((user) => {
-    if (!user) return goLogin();
-
-    // 🚀 СИНХРОННО ЖДЕМ ДАННЫЕ И ШРИФТЫ
-    // Шрифты больше не ждем, база первична. Заходим мгновенно.
-    db.collection("users").doc(user.uid).get().then((doc) => {
-        if (!doc.exists) return console.log("Soundly: Waiting profile...");
-        const data = doc.data();
+    if (user) {
+        // --- 🚀 МОНИТОРИНГ ОНЛАЙНА (TELEGRAM STYLE) ---
+        // 1. Обновляем время активности СРАЗУ при входе
+        db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
         
-        // 1. ВСТАВЛЯЕМ ДАННЫЕ (Пока всё еще невидимо)
-        const crLabel = document.getElementById('user-credits');
-        const niLabel = document.getElementById('profile-username');
-        if (crLabel) crLabel.innerText = data.credits || 0;
-        if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
-        setAvatarOnPage(data.avatar_id || 1);
+        // 2. Обновляем время каждые 2 минуты, пока вкладка открыта
+        setInterval(() => {
+            db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
+        }, 120000); 
+        // ----------------------------------------------
 
-        // 2. ОТКРЫВАЕМ «ЗАБОР» (Свет + Клик)
-        const header = document.querySelector('.top-header');
-        const container = document.querySelector('.middle-container');
-        
-        if (header && container) {
-            header.style.opacity = '1';
-            header.style.pointerEvents = 'auto'; // РАЗРЕШИТЬ КЛИКАТЬ
-            
-            container.style.opacity = '1';
-            container.style.pointerEvents = 'auto'; // РАЗРЕШИТЬ КЛИКАТЬ
-        }
-
-        openPage(null, 'page-home');
-
-        // 3. ТИХИЙ СЛУШАТЕЛЬ БАНА (Для фона)
-        db.collection("users").doc(user.uid).onSnapshot(s => {
-            const upd = s.data();
-            if(!upd) return;
-            if (upd.subscription === "banned") {
-                document.getElementById('ban-screen-overlay').style.display = 'flex';
-                document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
+        db.collection("users").doc(user.uid).onSnapshot((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                const banScreen = document.getElementById('ban-screen-overlay');
+                if (data.subscription === "banned") {
+                    if (banScreen) {
+                        banScreen.style.display = 'flex';
+                        document.getElementById('ban-date-text').innerText = "до " + (data.ban_expires || "...");
+                    }
+                } else {
+                    if (banScreen) banScreen.style.display = 'none';
+                    const crLabel = document.getElementById('user-credits');
+                    const niLabel = document.getElementById('profile-username');
+                    if (crLabel) crLabel.innerText = data.credits || 0;
+                    if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
+                    const serverId = data.avatar_id || 1;
+                    if (serverId != localStorage.getItem('soundly_my_avatar_id')) {
+                        localStorage.setItem('soundly_my_avatar_id', serverId);
+                        setAvatarOnPage(serverId);
+                    }
+                }
             } else {
-                if (crLabel) crLabel.innerText = upd.credits || 0;
+                if (user.emailVerified) {
+                    console.log("Жду базу...");
+                } else {
+                    goLogin(); 
+                }
             }
         });
-    }).catch(() => goLogin());
+
+        openPage(null, 'page-home');
+    } else {
+        goLogin(); 
+    }
 });
 
 // Функция пинка
