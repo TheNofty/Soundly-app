@@ -63,8 +63,8 @@
     <div class="credits-pill">
         <!-- Клик по плюсу теперь открывает страницу планов -->
         <img src="Interface/Icons/Top_ui/Plus.png" class="plus-icon" alt="+" onclick="openPage(null, 'page-plans')" onerror="this.style.display='none'">
-        <span class="credits-count" id="user-credits"></span>
-        <span class="credits-label"></span>
+        <span class="credits-count" id="user-credits">0</span>
+        <span class="credits-label">credits</span>
     </div>
     <button class="icon-btn">?</button>
     <!-- Клик по аватару открывает страницу профиля -->
@@ -192,7 +192,7 @@
                         <path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                     </svg>
                 </div>
-                <div id="profile-username" class="profile-username"></div>
+                <div id="profile-username" class="profile-username">@loading</div>
             </div>
 
             <!-- Другие -->

@@ -45,30 +45,29 @@ function goLogin() {
 }
 
 // === АВТОРИЗАЦИЯ + МГНОВЕННЫЙ ЗАГРУЗ ДАННЫХ ===
+// === УСКОРЕННЫЙ ВХОД (БЕЗ МАСКИРОВКИ) ===
 auth.onAuthStateChanged((user) => {
     if (!user) return goLogin();
 
-    // Вытаскиваем инфу одним ударом (speed-mode)
+    // Первый удар: СТРОГО забираем данные без задержек
     db.collection("users").doc(user.uid).get().then((doc) => {
         if (doc.exists) {
             const data = doc.data();
             
-            // Расставляем ник, кредиты и аватар сразу (интерфейс уже виден)
-            const cr = document.getElementById('user-credits');
-            const ni = document.getElementById('profile-username');
-            if (cr) cr.innerText = data.credits + " credits";
-            if (ni) ni.innerText = data.nickname ? "@" + data.nickname : "@User";
-            setAvatarOnPage(data.avatar_id || 1);
+            // Мгновенная замена заглушек
+            const creditsEl = document.getElementById('user-credits');
+            const nicknameEl = document.getElementById('profile-username');
 
+            if (creditsEl) creditsEl.innerText = data.credits || 0;
+            if (nicknameEl) nicknameEl.innerText = data.nickname ? "@" + data.nickname : "@User";
+            
+            setAvatarOnPage(data.avatar_id || 1);
             openPage(null, 'page-home');
 
-            // Подключаем слушатель только на критические вещи (бан)
+            // Живая связь для кредитов
             db.collection("users").doc(user.uid).onSnapshot(s => {
                 const upd = s.data();
-                if (upd && upd.subscription === "banned") {
-                    document.getElementById('ban-screen-overlay').style.display = 'flex';
-                    document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
-                }
+                if(upd && creditsEl) creditsEl.innerText = upd.credits || 0;
             });
         } else { goLogin(); }
     }).catch(() => goLogin());
