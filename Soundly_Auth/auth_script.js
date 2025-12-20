@@ -23,41 +23,6 @@ const registerForm = document.getElementById('form-register');
 const tabs = document.querySelectorAll('.tab');
 const statusText = document.getElementById('status-message');
 
-// --- ЛОГИКА: ЧТО ПРОИСХОДИТ ПОСЛЕ КЛИКА ИЗ ПИСЬМА ---
-const urlParams = new URLSearchParams(window.location.search);
-const activeToken = urlParams.get('token');
-
-if (activeToken) {
-    showStatus("Confirming... Wait for it!", "white");
-    
-    db.collection("pending_registrations").doc(activeToken).get().then(async (doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            try {
-                // ЮЗЕР РОЖДАЕТСЯ В AUTH (Firebase Authentication)
-                const cred = await auth.createUserWithEmailAndPassword(data.email, data.pass);
-                
-                // ЮЗЕР РОЖДАЕТСЯ В БД (Админка Users Base)
-                await db.collection("users").doc(cred.user.uid).set({
-                    nickname: data.nick,
-                    email: data.email,
-                    credits: 0,
-                    subscription: "Нет",
-                    reg_date: getMoscowDate(),
-                    avatar_id: Math.floor(Math.random() * 6) + 1
-                });
-
-                // Удаляем временную заявку из очереди
-                await db.collection("pending_registrations").doc(activeToken).delete();
-                
-                showStatus("Ready! You can log in now.", "white");
-                // Убираем "?token=..." из адреса
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } catch (e) { showStatus("Error: Token expired or used.", "red"); }
-        }
-    });
-}
-
 // === 2. ПОМОЩНИКИ ===
 function startAnimationAndGo() {
     isManualTransition = true;
@@ -119,8 +84,7 @@ function registerUser() {
     
     // ТВОЯ_ССЫЛКА_ИЗ_DEPLOY_В_SCRIPT_GOOGLE_COM (Вставь свою!)
     // Проверь этот URL. Он должен быть 1 в 1 как тот, что ты скинул:
-const botURL = "https://script.google.com/macros/s/AKfycbyxW8suBI0frNf5tfxRapo6OWcA9tbAg4p28gHmsbKreefKnKPOMjKvCgh4fEMQT-Sbig/exec";
-
+    const botURL = "https://script.google.com/macros/s/AKfycbxGlkrNJNEKggZ1-o03-X2_DlIALy15XSm0mw4flgSVG-TAX2Yt-5Ila28c0u21lkFdOw/exec";
     // ШАГ 1: Запись в Firestore (pending_registrations)
     // В Authentication в это время ПУСТО.
     db.collection("pending_registrations").doc(token).set({
@@ -149,46 +113,27 @@ const botURL = "https://script.google.com/macros/s/AKfycbyxW8suBI0frNf5tfxRapo6O
     });
 }
 
-// === 4. ВХОД ===
+// === 4. ВХОД (БЕЗ ПРОВЕРКИ EMAIL_VERIFIED) ===
 async function loginUser() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value;
-    if(!email || !pass) return showStatus("Enter data", "white");
+    if(!email || !pass) return showStatus("Enter email and password", "white");
     
     showStatus("Authorizing...", "white");
     
     try {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
-        // 🚀 ВАЖНЫЙ МОМЕНТ:
-        // Перезагружаем данные пользователя с серверов Google
-        await cred.user.reload();
-        
-        // Берем актуальное состояние ПОСЛЕ перезагрузки
-        const currentUser = auth.currentUser;
+        const currentUser = cred.user;
 
-        if (currentUser.emailVerified) {
-            // Кнопка нажата. Идем в базу.
-            const doc = await db.collection("users").doc(currentUser.uid).get();
+        // Если вошел — проверяем наличие карточки в БД
+        const doc = await db.collection("users").doc(currentUser.uid).get();
 
-            if (!doc.exists) {
-                // ПЕРВЫЙ УСПЕШНЫЙ ВХОД -> Создаем запись для Админки
-                const randAva = Math.floor(Math.random() * 6) + 1;
-                
-                await db.collection("users").doc(currentUser.uid).set({
-                    nickname: currentUser.displayName || "NewUser",
-                    email: currentUser.email, 
-                    credits: 0,              
-                    subscription: "Нет",     
-                    reg_date: getMoscowDate(), 
-                    avatar_id: randAva
-                });
-            }
-
+        if (doc.exists) {
             showStatus("Success!", "white");
             startAnimationAndGo(); 
         } else {
-            showStatus("Verify email via button first!", "yellow");
-            auth.signOut(); // Выкидываем, пока не подтвердит
+            // Если в Auth есть, а в базе нет — значит косяк регистрации
+            showStatus("Profile not found. Support required.", "red");
         }
     } catch(e) {
         showStatus("Invalid Login or Password", "white");

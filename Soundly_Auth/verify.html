@@ -9,9 +9,9 @@
 <body style="background:#121212; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; margin:0;">
     <h2 id="status">Creating Account...</h2>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk",
-            authDomain: "soundly-e318d.firebaseapp.com",
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk", 
+            authDomain: "soundly-e318d.firebaseapp.com", 
             projectId: "soundly-e318d",
             storageBucket: "soundly-e318d.firebasestorage.app",
             messagingSenderId: "452438627644",
@@ -27,7 +27,6 @@
             db.collection("pending_registrations").doc(token).get().then(doc => {
                 if (doc.exists) {
                     const data = doc.data();
-                    
                     auth.createUserWithEmailAndPassword(data.email, data.pass).then(cred => {
                         db.collection("users").doc(cred.user.uid).set({
                             nickname: data.nick,
@@ -37,21 +36,19 @@
                             reg_date: new Date().toLocaleDateString(),
                             avatar_id: 1
                         }).then(() => {
-                            // Чистим временную запись
                             db.collection("pending_registrations").doc(token).delete();
                             document.getElementById('status').innerText = "DONE! Redirecting...";
-                            
-                            // Выход из папки Soundly_Auth к главному файлу
+                            // КУДА КИНУТЬ ПОСЛЕ? Выход из Soundly_Auth к index.html
                             setTimeout(() => { window.location.href = "../index.html"; }, 2000);
                         });
                     }).catch(e => {
                         document.getElementById('status').innerText = "Auth Error: " + e.message;
                     });
                 } else {
-                    document.getElementById('status').innerText = "Link invalid or expired.";
+                    document.getElementById('status').innerText = "Link expired.";
                 }
-            }).catch(e => {
-                document.getElementById('status').innerText = "DB Connection Error.";
+            }).catch(() => {
+                document.getElementById('status').innerText = "Database Error.";
             });
         }
     </script>
