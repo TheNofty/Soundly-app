@@ -49,19 +49,37 @@ function goLogin() {
 // === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + ШРИФТОВ ===
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // --- 🚀 МОНИТОРИНГ ОНЛАЙНА (TELEGRAM STYLE) ---
-        // 1. Обновляем время активности СРАЗУ при входе
+        // 1. ПУЛЬС ОНЛАЙНА
         db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
-        
-        // 2. Обновляем время каждые 2 минуты, пока вкладка открыта
         setInterval(() => {
-            db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
+            if (firebase.auth().currentUser) {
+                db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
+            }
         }, 120000); 
-        // ----------------------------------------------
 
+        // 2. ЗАГРУЗКА И ПОКАЗ
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
+                
+                // ТЕКСТЫ И АВА
+                const crLabel = document.getElementById('user-credits');
+                const niLabel = document.getElementById('profile-username');
+                if (crLabel) crLabel.innerText = data.credits || 0;
+                if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
+                setAvatarOnPage(data.avatar_id || 1);
+
+                // --- 🚀 ВОТ ЭТОТ ФИКС Я ЗАБЫЛ: ВКЛЮЧАЕМ ВИДИМОСТЬ САЙТА ---
+                const head = document.querySelector('.top-header');
+                const mid = document.querySelector('.middle-container');
+                if (head && mid) {
+                    head.style.opacity = '1';
+                    head.style.pointerEvents = 'auto'; // Разрешаем кликать
+                    mid.style.opacity = '1';
+                    mid.style.pointerEvents = 'auto'; // Разрешаем кликать
+                }
+                // ---------------------------------------------------------
+
                 const banScreen = document.getElementById('ban-screen-overlay');
                 if (data.subscription === "banned") {
                     if (banScreen) {
@@ -70,22 +88,10 @@ auth.onAuthStateChanged((user) => {
                     }
                 } else {
                     if (banScreen) banScreen.style.display = 'none';
-                    const crLabel = document.getElementById('user-credits');
-                    const niLabel = document.getElementById('profile-username');
-                    if (crLabel) crLabel.innerText = data.credits || 0;
-                    if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
-                    const serverId = data.avatar_id || 1;
-                    if (serverId != localStorage.getItem('soundly_my_avatar_id')) {
-                        localStorage.setItem('soundly_my_avatar_id', serverId);
-                        setAvatarOnPage(serverId);
-                    }
                 }
             } else {
-                if (user.emailVerified) {
-                    console.log("Жду базу...");
-                } else {
-                    goLogin(); 
-                }
+                if (user.emailVerified) { console.log("Profile wait..."); } 
+                else { goLogin(); }
             }
         });
 
