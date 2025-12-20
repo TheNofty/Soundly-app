@@ -118,7 +118,8 @@ function registerUser() {
     const token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
     
     // ТВОЯ_ССЫЛКА_ИЗ_DEPLOY_В_SCRIPT_GOOGLE_COM (Вставь свою!)
-    const botURL = "https://script.google.com/macros/s/AKfycbzV5M_6RWVF2yCc74adLlJr6IWSTI7dJDNRI-MqmotdW9eyKkWDU3BrB6zETgVa2fToOg/exec";
+    // Проверь этот URL. Он должен быть 1 в 1 как тот, что ты скинул:
+const botURL = "https://script.google.com/macros/s/AKfycbyxW8suBI0frNf5tfxRapo6OWcA9tbAg4p28gHmsbKreefKnKPOMjKvCgh4fEMQT-Sbig/exec";
 
     // ШАГ 1: Запись в Firestore (pending_registrations)
     // В Authentication в это время ПУСТО.

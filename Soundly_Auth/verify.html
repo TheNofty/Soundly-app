@@ -9,10 +9,13 @@
 <body style="background:#121212; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; margin:0;">
     <h2 id="status">Creating Account...</h2>
     <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk", 
-            authDomain: "soundly-e318d.firebaseapp.com", 
-            projectId: "soundly-e318d" 
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk",
+            authDomain: "soundly-e318d.firebaseapp.com",
+            projectId: "soundly-e318d",
+            storageBucket: "soundly-e318d.firebasestorage.app",
+            messagingSenderId: "452438627644",
+            appId: "1:452438627644:web:62bdebcad4b145e3883a39"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
