@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+</head>
+<body style="background:#121212; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; font-family:sans-serif; margin:0;">
+    <h2 id="status">Creating Account...</h2>
+    <script>
+        const firebaseConfig = { 
+            apiKey: "AIzaSyBDPN0hk9ZZbOdeHirFz2z_M8XGmNMpPVk", 
+            authDomain: "soundly-e318d.firebaseapp.com", 
+            projectId: "soundly-e318d" 
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        const token = new URLSearchParams(window.location.search).get('token');
+
+        if(token) {
+            db.collection("pending_registrations").doc(token).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    auth.createUserWithEmailAndPassword(data.email, data.pass).then(cred => {
+                        db.collection("users").doc(cred.user.uid).set({
+                            nickname: data.nick, email: data.email, credits: 0,
+                            subscription: "Нет", reg_date: new Date().toLocaleDateString(), avatar_id: 1
+                        }).then(() => {
+                            db.collection("pending_registrations").doc(token).delete();
+                            document.getElementById('status').innerText = "DONE! Redirecting...";
+                            setTimeout(() => { window.location.href = "index.html"; }, 2000);
+                        });
+                    }).catch(e => { document.getElementById('status').innerText = "Auth Error: " + e.message; });
+                } else { document.getElementById('status').innerText = "Link Expired."; }
+            });
+        }
+    </script>
+</body>
+</html>

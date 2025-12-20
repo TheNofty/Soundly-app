@@ -128,9 +128,6 @@ function registerUser() {
         pass: pass,
         created_at: Date.now()
     }).then(() => {
-        // ШАГ 2: Пинг нашего GAS бота для отправки письма
-        // Ссылка в письме будет вести на verify.html?token=...
-        console.log("BRAT, ОТПРАВЛЯЮ ЗАПРОС БОТУ..."); // Print в консоль браузера
         fetch(`${botURL}?email=${email}&nick=${nick}&token=${token}`, { mode: 'no-cors' })
             .then(() => {
                 console.log("ЗАПРОС УШЕЛ УСПЕШНО. ТОКЕН:", token);
