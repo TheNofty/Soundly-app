@@ -44,52 +44,33 @@ function goLogin() {
     });
 }
 
-// === 🚀 СИСТЕМА «МЯГКОГО» СТАРТА ===
+// === АВТОРИЗАЦИЯ + МГНОВЕННЫЙ ЗАГРУЗ ДАННЫХ ===
 auth.onAuthStateChanged((user) => {
     if (!user) return goLogin();
 
-    // БЫСТРЫЙ УДАР (Получаем данные без «прослушки» для скорости)
+    // Вытаскиваем инфу одним ударом (speed-mode)
     db.collection("users").doc(user.uid).get().then((doc) => {
-        if (!doc.exists) return;
+        if (doc.exists) {
+            const data = doc.data();
+            
+            // Расставляем ник, кредиты и аватар сразу (интерфейс уже виден)
+            const cr = document.getElementById('user-credits');
+            const ni = document.getElementById('profile-username');
+            if (cr) cr.innerText = data.credits || 0;
+            if (ni) ni.innerText = data.nickname ? "@" + data.nickname : "@User";
+            setAvatarOnPage(data.avatar_id || 1);
 
-        const data = doc.data();
-        
-        // 1. Вставляем текст
-        const crLabel = document.getElementById('user-credits');
-        const niLabel = document.getElementById('profile-username');
-        if (crLabel) crLabel.innerText = data.credits || 0;
-        if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
+            openPage(null, 'page-home');
 
-        // 2. Ставим актуальную аватарку
-        setAvatarOnPage(data.avatar_id || 1);
-
-        // 3. ОТКРЫВАЕМ «ЗАБОР»
-        setTimeout(() => {
-            const bootLoader = document.getElementById('app-boot-loader');
-            if (bootLoader) {
-                bootLoader.style.opacity = '0'; // Исчезновение
-                setTimeout(() => { 
-                    bootLoader.style.display = 'none'; 
-                    document.querySelector('.top-header').style.opacity = '1';
-                    document.querySelector('.middle-container').style.opacity = '1';
-                    document.body.style.overflow = 'auto'; // Снимаем замок
-                }, 400);
-            }
-        }, 150);
-
-        // 4. Показываем нужную страницу
-        openPage(null, 'page-home');
-
-        // 5. После открытия сайта — тихо подключаем «слушатель» бана и кредитов
-        db.collection("users").doc(user.uid).onSnapshot((s) => {
-            const upd = s.data();
-            if (upd && upd.subscription === "banned") {
-                document.getElementById('ban-screen-overlay').style.display = 'flex';
-                document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
-            } else if(upd) {
-                document.getElementById('user-credits').innerText = upd.credits || 0;
-            }
-        });
+            // Подключаем слушатель только на критические вещи (бан)
+            db.collection("users").doc(user.uid).onSnapshot(s => {
+                const upd = s.data();
+                if (upd && upd.subscription === "banned") {
+                    document.getElementById('ban-screen-overlay').style.display = 'flex';
+                    document.getElementById('ban-date-text').innerText = "до " + (upd.ban_expires || "...");
+                }
+            });
+        } else { goLogin(); }
     }).catch(() => goLogin());
 });
 
