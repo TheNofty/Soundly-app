@@ -49,7 +49,14 @@ function goLogin() {
 // === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + ШРИФТОВ ===
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // 1. ПУЛЬС ОНЛАЙНА
+        // --- 🚀 1. ОТКРЫВАЕМ "ШТОРЫ" МГНОВЕННО ---
+        // Больше никакого ожидания базы! Видим юзера = включаем свет.
+        const header = document.querySelector('.top-header');
+        const container = document.querySelector('.middle-container');
+        if (header) { header.style.opacity = '1'; header.style.pointerEvents = 'auto'; }
+        if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
+
+        // --- 2. ПУЛЬС ОНЛАЙНА ---
         db.collection("users").doc(user.uid).update({ last_active: Date.now() }).catch(()=>{});
         setInterval(() => {
             if (firebase.auth().currentUser) {
@@ -57,29 +64,20 @@ auth.onAuthStateChanged((user) => {
             }
         }, 120000); 
 
-        // 2. ЗАГРУЗКА И ПОКАЗ
+        // --- 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 
-                // ТЕКСТЫ И АВА
+                // ТЕКСТЫ И КРЕДИТЫ
                 const crLabel = document.getElementById('user-credits');
                 const niLabel = document.getElementById('profile-username');
                 if (crLabel) crLabel.innerText = data.credits || 0;
                 if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
+                
                 setAvatarOnPage(data.avatar_id || 1);
 
-                // --- 🚀 ВОТ ЭТОТ ФИКС Я ЗАБЫЛ: ВКЛЮЧАЕМ ВИДИМОСТЬ САЙТА ---
-                const head = document.querySelector('.top-header');
-                const mid = document.querySelector('.middle-container');
-                if (head && mid) {
-                    head.style.opacity = '1';
-                    head.style.pointerEvents = 'auto'; // Разрешаем кликать
-                    mid.style.opacity = '1';
-                    mid.style.pointerEvents = 'auto'; // Разрешаем кликать
-                }
-                // ---------------------------------------------------------
-
+                // ПРОВЕРКА БАНА
                 const banScreen = document.getElementById('ban-screen-overlay');
                 if (data.subscription === "banned") {
                     if (banScreen) {
@@ -90,13 +88,16 @@ auth.onAuthStateChanged((user) => {
                     if (banScreen) banScreen.style.display = 'none';
                 }
             } else {
-                if (user.emailVerified) { console.log("Profile wait..."); } 
-                else { goLogin(); }
+                // Если ты верифицирован в Auth, но в базе нет записи — ждем создания из логина.
+                if (!user.emailVerified) goLogin();
             }
         });
 
+        // Посадка на главную
         openPage(null, 'page-home');
+
     } else {
+        // Гость - на выход
         goLogin(); 
     }
 });
