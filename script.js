@@ -66,17 +66,17 @@ auth.onAuthStateChanged((user) => {
             }
         };
 
-        // Мгновенная активация
+        // Стучим сразу при входе
         heartBeat(); 
-        const hbInterval = setInterval(heartBeat, 1000);
+        if (window.hbLoop) clearInterval(window.hbLoop);
+        // 🚀 СИНХРОН: 3 секунды как ты просил
+        window.hbLoop = setInterval(heartBeat, 3000);
 
-        // ФИКС БАГА: Пробуждение вкладки без перезагрузки (Visibility + Focus)
-        ["visibilitychange", "focus"].forEach(evt => {
-            window.addEventListener(evt, () => {
-                if (document.visibilityState === "visible") heartBeat();
-            });
+        // ФИКС "ЗАСЫПАНИЯ": Пробуждаем сессию, когда ты просто ткнул в окно
+        window.onfocus = () => heartBeat();
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) heartBeat(); 
         });
-        // -----------------------------------------
         // ------------------------------------
 
         // --- 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---

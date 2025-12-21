@@ -57,7 +57,8 @@
                             credits: 0,
                             subscription: "Нет",
                             reg_date: getMoscowDate(),
-                            avatar_id: 1
+                            avatar_id: 1,
+                            is_verified: true // 🚀 ВЕЧНЫЙ КЛЮЧ-ПРОПУСК
                         });
                         await db.collection("pending_registrations").doc(token).delete();
                         
