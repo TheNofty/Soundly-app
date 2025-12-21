@@ -57,20 +57,24 @@ auth.onAuthStateChanged((user) => {
         if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
 
         // --- 🚀 ЕДИНЫЙ ПУЛЬС: ЖИВАЯ АКТИВНОСТЬ ---
-        const heartBeat = () => {
+        const heartBeat = (isOffline = false) => {
             const currentU = firebase.auth().currentUser;
             if (currentU) {
                 db.collection("users").doc(currentU.uid).update({ 
-                    last_active: Date.now() 
+                    // Если выходим — пишем 0, если нет — текущее время
+                    last_active: isOffline ? 0 : Date.now() 
                 }).catch(()=>{});
             }
         };
 
+        // СИГНАЛ "ПРОЩАНИЯ" ПРИ ЗАКРЫТИИ ВКЛАДКИ
+        window.addEventListener('beforeunload', () => heartBeat(true));
+
         // Стучим сразу при входе
         heartBeat(); 
         if (window.hbLoop) clearInterval(window.hbLoop);
-        // 🚀 СИНХРОН: 3 секунды как ты просил
-        window.hbLoop = setInterval(heartBeat, 3000);
+        // Стучим каждую секунду, чтобы перебить тормоза браузера
+        window.hbLoop = setInterval(heartBeat, 1000);
 
         // ФИКС "ЗАСЫПАНИЯ": Пробуждаем сессию, когда ты просто ткнул в окно
         window.onfocus = () => heartBeat();
