@@ -8,7 +8,9 @@ const firebaseConfig = {
   storageBucket: "soundly-e318d.firebasestorage.app",
   messagingSenderId: "452438627644",
   appId: "1:452438627644:web:62bdebcad4b145e3883a39",
-  measurementId: "G-WCWCY793Z9"
+  measurementId: "G-WCWCY793Z9",
+  // БЕЗ ЭТОГО НИЧЕГО НЕ ЗАРАБОТАЕТ:
+  databaseURL: "https://soundly-e318d-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 try { firebase.initializeApp(firebaseConfig); } catch (e) {}
@@ -46,49 +48,50 @@ function goLogin() {
     });
 }
 
-// === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + ШРИФТОВ ===
+// === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + СТАТУС ===
 auth.onAuthStateChanged((user) => {
     if (user) {
         // --- 🚀 1. ОТКРЫВАЕМ "ШТОРЫ" МГНОВЕННО ---
-        // Больше никакого ожидания базы! Видим юзера = включаем свет.
         const header = document.querySelector('.top-header');
         const container = document.querySelector('.middle-container');
         if (header) { header.style.opacity = '1'; header.style.pointerEvents = 'auto'; }
         if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
 
-        // --- 🚀 ЕДИНЫЙ ПУЛЬС: ЖИВАЯ АКТИВНОСТЬ ---
-        const heartBeat = (isOffline = false) => {
-            const currentU = firebase.auth().currentUser;
-            if (currentU) {
-                db.collection("users").doc(currentU.uid).update({ 
-                    // Если выходим — пишем 0, если нет — текущее время
-                    last_active: isOffline ? 0 : Date.now() 
-                }).catch(()=>{});
-            }
-        };
+        // --- 🚀 2. RTDB СТАТУС (DISCORD-PRESENCE LOGIC) ---
+        if (typeof firebase.database === 'function') {
+            const rtdb = firebase.database();
+            const userStatusRef = rtdb.ref('status/' + user.uid);
+            const connectedRef = rtdb.ref('.info/connected');
 
-        // СИГНАЛ "ПРОЩАНИЯ" ПРИ ЗАКРЫТИИ ВКЛАДКИ
-        window.addEventListener('beforeunload', () => heartBeat(true));
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    console.log(" [RTDB]: Узел связи найден. Синхронизирую...");
 
-        // Стучим сразу при входе
-        heartBeat(); 
-        if (window.hbLoop) clearInterval(window.hbLoop);
-        // Стучим каждую секунду, чтобы перебить тормоза браузера
-        window.hbLoop = setInterval(heartBeat, 1000);
+                    // Сначала БРОНИРУЕМ оффлайн, и только когда база ответит "ОК" — ставим онлайн
+                    userStatusRef.onDisconnect().set({ state: 'offline' }).then(() => {
+                        userStatusRef.set({ state: 'online' });
+                        console.log(" [RTDB]: СТАТУС: ONLINE ✅");
+                    });
+                }
+            });
 
-        // ФИКС "ЗАСЫПАНИЯ": Пробуждаем сессию, когда ты просто ткнул в окно
-        window.onfocus = () => heartBeat();
-        document.addEventListener("visibilitychange", () => {
-            if (!document.hidden) heartBeat(); 
-        });
-        // ------------------------------------
+            // Брат, это НЕ дудос. Это "Keep-Alive". Раз в минуту напоминаем базе, что мы тут.
+            // Это стандарт индустрии, чтобы статус не тух на мобилках.
+            if (window.statusInterval) clearInterval(window.statusInterval);
+            window.statusInterval = setInterval(() => {
+                if (firebase.auth().currentUser) userStatusRef.set({ state: 'online' });
+            }, 60000); 
 
-        // --- 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---
+        } else {
+            console.error(" [RTDB]: Библиотека базы не найдена.");
+        }
+
+        // --- 🚀 3. ТИХАЯ ПОДГРУЗКА ДАННЫХ В ФОНЕ ---
         db.collection("users").doc(user.uid).onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 
-                // ТЕКСТЫ И КРЕДИТЫ
+                // Тексты и кредиты
                 const crLabel = document.getElementById('user-credits');
                 const niLabel = document.getElementById('profile-username');
                 if (crLabel) crLabel.innerText = data.credits || 0;
@@ -96,7 +99,7 @@ auth.onAuthStateChanged((user) => {
                 
                 setAvatarOnPage(data.avatar_id || 1);
 
-                // ПРОВЕРКА БАНА
+                // Проверка бана
                 const banScreen = document.getElementById('ban-screen-overlay');
                 if (data.subscription === "banned") {
                     if (banScreen) {
@@ -107,7 +110,6 @@ auth.onAuthStateChanged((user) => {
                     if (banScreen) banScreen.style.display = 'none';
                 }
             } else {
-                // Если ты верифицирован в Auth, но в базе нет записи — ждем создания из логина.
                 if (!user.emailVerified) goLogin();
             }
         });
@@ -116,7 +118,6 @@ auth.onAuthStateChanged((user) => {
         openPage(null, 'page-home');
 
     } else {
-        // Гость - на выход
         goLogin(); 
     }
 });
