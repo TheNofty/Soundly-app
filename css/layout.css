@@ -29,15 +29,6 @@ body {
     flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative;
 }
 
-.middle-container {
-    flex-grow: 1; display: flex; overflow: hidden; width: 100%; position: relative;
-    
-    /* БЛОКИРОВКА: Невидимый + НЕ кликабельный */
-    opacity: 0; 
-    pointer-events: none; 
-    transition: opacity 0.5s ease;
-}
-
 /* 1. РОДИТЕЛЬ (Фон) - БЕЗ ЛИНИИ */
 .header-logo-area {
     width: var(--sidebar-w); height: 100%;

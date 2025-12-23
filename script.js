@@ -29,9 +29,15 @@ function setAvatarOnPage(id) {
     const hImg = document.getElementById('user-avatar');
     const pImg = document.getElementById('profile-big-avatar');
 
-    // Если картинка уже стоит такая же — не трогаем (защита от моргания)
-    if (hImg && hImg.getAttribute('src') !== finalSrc) hImg.src = finalSrc;
-    if (pImg && pImg.getAttribute('src') !== finalSrc) pImg.src = finalSrc;
+    // Ставим путь и проявляем
+    if (hImg) {
+        hImg.src = finalSrc;
+        hImg.style.opacity = "1";
+    }
+    if (pImg) {
+        pImg.src = finalSrc;
+        pImg.style.opacity = "1";
+    }
 }
 
 // === 🚀 1. МГНОВЕННАЯ ЗАГРУЗКА ИЗ ПАМЯТИ ===
@@ -51,11 +57,8 @@ function goLogin() {
 // === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + СТАТУС ===
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // --- 🚀 1. ОТКРЫВАЕМ "ШТОРЫ" МГНОВЕННО ---
-        const header = document.querySelector('.top-header');
-        const container = document.querySelector('.middle-container');
-        if (header) { header.style.opacity = '1'; header.style.pointerEvents = 'auto'; }
-        if (container) { container.style.opacity = '1'; container.style.pointerEvents = 'auto'; }
+        // Старая система оверлея удалена. Ждем полной подгрузки Firestore...
+        console.log(" [SYSTEM]: Доступ получен, подгружаю профиль...");
 
         // --- 🚀 2. RTDB СТАТУС (DISCORD-PRESENCE LOGIC) ---
         if (typeof firebase.database === 'function') {
@@ -98,6 +101,7 @@ auth.onAuthStateChanged((user) => {
                 if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
                 
                 setAvatarOnPage(data.avatar_id || 1);
+                console.log(" [SYSTEM]: Данные профиля загружены из Firestore.");
 
                 // Проверка бана
                 const banScreen = document.getElementById('ban-screen-overlay');
