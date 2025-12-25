@@ -277,7 +277,22 @@ function openPage(btnElement, pageId) {
 
     // 3. Открываем нужную
     const targetPage = document.getElementById(pageId);
-    if (targetPage) { targetPage.style.display = 'block'; }
+    if (targetPage) { 
+        targetPage.style.display = 'block'; 
+
+        // Если открываем Browse и он еще пустой — всасываем контент
+        if (pageId === 'page-browse' && targetPage.innerHTML === "") {
+            fetch('Browse/browse.html')
+                .then(res => res.text())
+                .then(html => {
+                    targetPage.innerHTML = html;
+                    // Подгружаем скрипт Browse вручную, чтобы он ожил
+                    const script = document.createElement('script');
+                    script.src = 'Browse/browse.js';
+                    document.body.appendChild(script);
+                });
+        }
+    }
 
     // 4. Логика плеера (Скрываем на главной)
     const player = document.querySelector('.bottom-player');

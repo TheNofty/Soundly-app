@@ -2,7 +2,8 @@
 const FOLDER_WHITELIST = ['kicks', 'snares', 'claps', 'hats', 'percs', 'basses', 'loops', 'samples', 'fx'];
 
 async function scanPacks() {
-    const packsPath = './Browse/Packs/';
+    const path = require('path');
+    const packsPath = path.join(__dirname, 'Browse', 'Packs');
     const grid = document.getElementById('browse-grid');
     
     // В Electron используем fs для чтения папок
