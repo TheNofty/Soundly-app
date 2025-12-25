@@ -54,6 +54,15 @@ function goLogin() {
     });
 }
 
+// КНОПКА ВЫХОДА ИЗ ПРОФИЛЯ
+function logoutUser() {
+    if (confirm("Are you sure you want to log out?")) {
+        auth.signOut().then(() => {
+            window.location.href = "Soundly_Auth/auth.html";
+        });
+    }
+}
+
 // === 3. УМНЫЙ СТАРТ: ПРОВЕРКА АККАУНТА + СТАТУС ===
 auth.onAuthStateChanged((user) => {
     if (user) {
@@ -100,8 +109,35 @@ auth.onAuthStateChanged((user) => {
                 if (crLabel) crLabel.innerText = data.credits || 0;
                 if (niLabel) niLabel.innerText = data.nickname ? "@" + data.nickname : "@User";
                 
+                // 🚀 ПРОВЕРКА СРОКА ПОДПИСКИ
+                if (data.subscription === "active" && data.date_end && data.date_end !== "--") {
+                    const expiry = parseExpiryDate(data.date_end);
+                    const now = new Date();
+
+                    if (expiry && now > expiry) {
+                        console.log(" [SYSTEM]: Срок подписки истек. Обнуление...");
+                        db.collection("users").doc(user.uid).update({
+                            subscription: "none",
+                            current_plan: "Free",
+                            credits: 0,
+                            date_end: "--"
+                        });
+                    }
+                }
+
                 setAvatarOnPage(data.avatar_id || 1);
-                console.log(" [SYSTEM]: Данные профиля загружены из Firestore.");
+
+                // 🚀 ОТКРЫВАЕМ САЙТ (Убираем глобальную шторку)
+                const loader = document.getElementById('global-loader');
+                if (loader) {
+                    // Разрешаем кликать сквозь шторку МГНОВЕННО
+                    loader.style.pointerEvents = 'none'; 
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.visibility = 'hidden';
+                    }, 500);
+                    console.log(" [SYSTEM]: Данные профиля получены, шторка открыта.");
+                }
 
                 // Проверка бана
                 const banScreen = document.getElementById('ban-screen-overlay');
@@ -115,6 +151,24 @@ auth.onAuthStateChanged((user) => {
                 }
             } else {
                 if (!user.emailVerified) goLogin();
+            }
+        });
+
+        // 🚀 МОНИТОРИНГ ЗАЯВКИ НА ОПЛАТУ
+        db.collection("payments").where("uid", "==", user.uid).onSnapshot((snap) => {
+            const confirmBtn = document.querySelector('.t-confirm-btn');
+            if (!confirmBtn) return;
+
+            if (!snap.empty) {
+                // Если в базе есть хоть одна заявка от этого юзера
+                confirmBtn.classList.add('checking');
+                confirmBtn.innerText = "ОЖИДАНИЕ ПОДТВЕРЖДЕНИЯ...";
+                console.log(" [BILLING]: У вас есть активная заявка. Кнопка заблокирована.");
+            } else {
+                // Если заявок нет (админ удалил/одобрил)
+                confirmBtn.classList.remove('checking');
+                confirmBtn.innerText = "Я оплатил";
+                console.log(" [BILLING]: Заявок нет. Кнопка доступна.");
             }
         });
 
@@ -201,6 +255,12 @@ function loadUserCredits(userId) {
 
 // === 3. НАВИГАЦИЯ ===
 function openPage(btnElement, pageId) {
+    // 0. ЗАКРЫВАЕМ ЭКРАН ОПЛАТЫ (если он открыт)
+    const checkoutOverlay = document.getElementById('page-checkout');
+    if (checkoutOverlay) {
+        checkoutOverlay.style.display = 'none';
+    }
+
     // 1. Управление подсветкой кнопок
     if (btnElement) {
         // Если нажали на Кнопку меню -> Сбрасываем старую, подсвечиваем новую
@@ -378,7 +438,18 @@ function goToCheckoutPage() {
     if(pl) pl.style.display = 'none';
     
     const chkPage = document.getElementById('page-checkout');
-    if (chkPage) chkPage.style.display = 'flex';
+    if (chkPage) {
+        chkPage.style.display = 'flex';
+        
+        // 🚀 ПРОВЕРКА ПРИ ВХОДЕ: Сразу ищем, нет ли уже отправленной заявки
+        db.collection("payments").where("uid", "==", auth.currentUser.uid).get().then(snap => {
+            const btn = chkPage.querySelector('.t-confirm-btn');
+            if (!snap.empty && btn) {
+                btn.classList.add('checking');
+                btn.innerText = "ОЖИДАНИЕ ПОДТВЕРЖДЕНИЯ...";
+            }
+        });
+    }
 }
 
 // === 6. УНИВЕРСАЛЬНАЯ ЛОГИКА КНОПОК ЛОГОТИПА (БЕЗ ПЕРЕЗАГРУЗКИ) ===
@@ -453,4 +524,54 @@ function checkBanExpired(dateStr) {
         // Если текущее время больше даты бана -> TRUE (бан истек)
         return now > banEnd; 
     } catch(e) { return false; }
+}
+
+// === ЛОГИКА ПОДТВЕРЖДЕНИЯ ОПЛАТЫ (FIRESTORE DATABASE) ===
+async function confirmPayment(btn) {
+    if (btn.classList.contains('checking')) return;
+
+    const planName = document.getElementById('chk-plan-name').innerText;
+    const sum = document.getElementById('chk-sum').innerText;
+    const period = document.getElementById('chk-period').innerText.replace('/ ', ''); 
+    const userNick = document.getElementById('profile-username').innerText;
+    const u = auth.currentUser;
+
+    if (!u) return alert("Ошибка авторизации");
+
+    // Визуал: блокируем кнопку
+    btn.classList.add('checking');
+    btn.innerText = "ОЖИДАНИЕ ПОДТВЕРЖДЕНИЯ...";
+
+    // Пишем заявку в БД (Добавили поле period)
+    db.collection("payments").add({
+        uid: u.uid,
+        nickname: userNick,
+        plan: planName,
+        amount: sum,
+        period: period, 
+        status: "pending",
+        date: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        console.log(" [BILLING]: Заявка создана. Ждем админа.");
+        // Кнопка остается серой, чтобы нельзя было спамить
+    }).catch(err => {
+        console.error(" Ошибка БД:", err);
+        btn.classList.remove('checking');
+        btn.innerText = "ОШИБКА. ПОПРОБУЙ ЕЩЕ РАЗ";
+    });
+}
+
+// Функция перевода твоей строки даты в объект времени для сравнения
+function parseExpiryDate(dateStr) {
+    try {
+        // Регулярка сожрет скобку с пробелом или без него
+        const clean = dateStr.replace(/[\s]*\(/, ' ').replace(')', '');
+        const [datePart, timePart] = clean.split(' ');
+        const [d, m, y] = datePart.split('.');
+        const [hh, mm] = timePart.split(':');
+        // Месяцы в JS начинаются с 0 (январь = 0), поэтому m - 1
+        return new Date(y, m - 1, d, hh, mm);
+    } catch (e) {
+        return null;
+    }
 }

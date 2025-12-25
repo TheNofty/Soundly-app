@@ -1,0 +1,67 @@
+:root {
+    /* ПИКСЕЛЬНЫЙ ЗАКОН: [1, 2, 4, 5, 6, 8, 10] и кратно 5/10 */
+    --card-w:            160px;     /* Ширина карточки */
+    --card-h:            240px;     /* Высота карточки */
+    --card-radius:       8px;       /* Скругление */
+    --card-gap:          20px;      /* Расстояние между карточками */
+    
+    --banner-size:       140px;     /* Размер квадратной обложки */
+    --banner-radius:     6px;
+    
+    --font-title:        14px;
+    --font-author:       12px;
+    
+    --bg-card:           #181818;
+    --text-main:         #FFFFFF;
+    --text-dim:          #888888;
+}
+
+.browse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, var(--card-w));
+    gap: var(--card-gap);
+    padding: 30px;
+    justify-content: center;
+}
+
+.pack-card {
+    width: var(--card-w);
+    height: var(--card-h);
+    background: var(--bg-card);
+    border-radius: var(--card-radius);
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.pack-card:hover {
+    transform: translateY(-5px);
+    background: #202020;
+}
+
+.pack-banner {
+    width: var(--banner-size);
+    height: var(--banner-size);
+    margin: 0 auto 10px auto;
+    border-radius: var(--banner-radius);
+    background-color: #252525; /* Заглушка */
+    background-size: cover;
+    background-position: center;
+    display: block;
+}
+
+.pack-title {
+    font-size: var(--font-title);
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pack-author {
+    font-size: var(--font-author);
+    color: var(--text-dim);
+    margin-top: 4px;
+}

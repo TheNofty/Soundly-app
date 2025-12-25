@@ -201,12 +201,12 @@
     opacity: 0.8;
 }
 
-/* === СОСТОЯНИЕ: СТАЛА СЕРОЙ (ПЛАВНЫЙ ПЕРЕХОД) === */
-/* Так как у родителя есть transition: 0.2s, цвет перетечет плавно */
+/* СОСТОЯНИЕ: ПРОВЕРКА (Блокировка кнопки) */
 .t-confirm-btn.checking {
-    background-color: #333333; /* Серый фон */
-    color: #888888;            /* Тусклый текст */
-    pointer-events: none;      /* Нажать нельзя */
-    cursor: default;           /* Стрелка */
-    opacity: 1;                /* Убираем эффекты наведения */
+    background-color: #333333 !important; /* Серый фон */
+    color: #888888 !important;            /* Тусклый текст */
+    pointer-events: none;                 /* Физически отключаем клик */
+    cursor: default;                      /* Убираем руку */
+    opacity: 1; 
+    box-shadow: none;                     /* Убираем тени если были */
 }

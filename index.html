@@ -35,6 +35,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 </head>
 <body>
+    <!-- ГЛОБАЛЬНАЯ ШТОРКА (ПОЛНЫЙ ЭКРАН) -->
+    <div id="global-loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; z-index: 99999; transition: opacity 0.5s ease, visibility 0.5s;"></div>
 
     <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
     <div class="top-header">
@@ -53,7 +55,7 @@
                     <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
-                    <input type="text" placeholder="Search Soundly">
+                    <input type="text" placeholder="Search Soundly" maxlength="100">
                 </div>
             </div>
 
@@ -191,6 +193,7 @@
                     </svg>
                 </div>
                 <div id="profile-username" class="profile-username">@loading</div>
+                <button class="logout-btn" onclick="logoutUser()">LOG OUT</button>
             </div>
 
             <!-- Другие -->
@@ -266,7 +269,8 @@
         <!-- Шапка -->
         <div class="checkout-header-dummy">
             <div class="header-logo-area">
-                <div class="logo-click-zone">
+                <!-- Добавлена команда возврата домой -->
+                <div class="logo-click-zone" onclick="openPage(null, 'page-home')">
                     <img src="Interface/Icons/Top_ui/Logo.png" class="app-logo" alt="Soundly">
                     <span class="app-name">SOUNDLY</span>
                 </div>
