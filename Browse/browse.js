@@ -6,7 +6,8 @@ async function scanPacks() {
     const path = require('path');
     
     // Скрипт в папке Browse, значит Packs — это его «сосед»
-    const packsPath = path.join(__dirname, 'Packs');
+    // Ссылка из корня (index.html) в папку Browse/Packs
+    const packsPath = path.join(__dirname, 'Browse', 'Packs');
     const grid = document.getElementById('browse-grid');
 
     console.log("[DEBUG] Сканирую папку:", packsPath);
